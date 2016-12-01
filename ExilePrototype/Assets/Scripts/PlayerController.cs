@@ -100,14 +100,12 @@ public class PlayerController : MonoBehaviour {
 
 	private void UpdateAura() {
 		if (fadeInAura) {
-			Debug.Log("Fading in");
 			emissionRateOverTime.constant += auraFadeRate;
 			if (emissionRateOverTime.constant >= maxAuraEmissionRate)
 				fadeInAura = false;
 		}
 
 		if (fadeOutAura) {
-			Debug.Log("Fading out");
 			emissionRateOverTime.constant -= auraFadeRate;
 			if (emissionRateOverTime.constant <= 0.0f)
 				fadeOutAura = false;
