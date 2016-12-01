@@ -297,10 +297,10 @@ InputManager:
     m_Name: P2_Horizontal
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: q
+    negativeButton: a
     positiveButton: d
     altNegativeButton: 
-    altPositiveButton: a
+    altPositiveButton: q
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
