@@ -39,6 +39,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4102921417504642}
   - component: {fileID: 212586592761706010}
+  - component: {fileID: 50820884178239860}
+  - component: {fileID: 114821304673981558}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -53,7 +55,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1224789267525580}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.71, y: -2.37, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4386439912119378}
@@ -67,7 +69,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1197555779609654}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.71, y: 2.37, z: -10}
+  m_LocalPosition: {x: 0.06, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4102921417504642}
@@ -85,7 +87,7 @@ Camera:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
+    x: 0.5
     y: 0
     width: 0.5
     height: 1
@@ -107,6 +109,26 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
+--- !u!50 &50820884178239860
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1224789267525580}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 5
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!81 &81707069858282130
 AudioListener:
   m_ObjectHideFlags: 1
@@ -121,6 +143,21 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1197555779609654}
   m_Enabled: 1
+--- !u!114 &114821304673981558
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1224789267525580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea57270400b1a4f46948d7187d686734, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 50
+  playerNumber: 0
+  colorPlayer1: {r: 0.77254903, g: 0.49803922, b: 0.2509804, a: 1}
+  colorPlayer2: {r: 0.14901961, g: 0.62352943, b: 0.8156863, a: 1}
 --- !u!124 &124902945825040800
 Behaviour:
   m_ObjectHideFlags: 1
@@ -160,6 +197,6 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: bb19018c0c6f84e17a0c34a8ab5e4422, type: 3}
-  m_Color: {r: 0.61764705, g: 0.6361054, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
