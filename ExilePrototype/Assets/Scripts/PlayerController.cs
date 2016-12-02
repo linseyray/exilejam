@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private Player playerNumber;
 	[SerializeField] private Color colorPlayer1;
 	[SerializeField] private Color colorPlayer2;
+	[SerializeField] private GameObject otherPlayer;
 	[SerializeField] private ParticleSystem aura;
 
 	private enum Player { PLAYER_ONE, PLAYER_TWO };
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour {
 	public BalanceDirection currentBalanceDirection;
 
 	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
+	[SerializeField] private float magnetStrength;
 
 	private float roomPresenceImpact = 0.05f;		// the speed at which balance changes based on room presence
 	private float otherPlayerImpact = 0.5f;			// the amount with which the other player inclues the balance
@@ -109,13 +111,7 @@ public class PlayerController : MonoBehaviour {
 		UpdatePlayerVision();
 		UpdatePlayerMovement();
 		UpdateAura();
-
-		// Change balance based on closeness to other player(?)
-		// TODO maybe?
-		if (isCloseToOtherPlayer) {
-		}
-		else {	
-		}
+		MagnetMechanic();
 	}
 
 	private void Move() {
@@ -176,6 +172,16 @@ public class PlayerController : MonoBehaviour {
 
 		// Update particle system
 		emission.rateOverTime = emissionRateOverTime;
+	}
+
+	private void MagnetMechanic() {
+		if (isCloseToOtherPlayer) {
+			// Add small force toward other player
+			Vector2 targetPoint = otherPlayer.transform.position;
+			Vector2 currentPosition = transform.position;
+			Vector2 forceDirection = targetPoint - currentPosition;
+			rigidBody2D.AddForce(forceDirection * magnetStrength);
+		}
 	}
 
 	/*********************************************************************************************************

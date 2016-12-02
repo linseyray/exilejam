@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 20186977553147224}
   - component: {fileID: 92418589019852702}
   - component: {fileID: 124902945825040800}
-  - component: {fileID: 81707069858282130}
   - component: {fileID: 114061274848378822}
   - component: {fileID: 114287093096820022}
   - component: {fileID: 114302980101717828}
@@ -47,7 +46,7 @@ GameObject:
   - component: {fileID: 50820884178239860}
   - component: {fileID: 114821304673981558}
   - component: {fileID: 61185450733848454}
-  m_Layer: 14
+  m_Layer: 15
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +122,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1197555779609654}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.06, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4102921417504642}
@@ -224,13 +223,6 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
---- !u!81 &81707069858282130
-AudioListener:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1197555779609654}
-  m_Enabled: 1
 --- !u!92 &92418589019852702
 Behaviour:
   m_ObjectHideFlags: 1
@@ -386,9 +378,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNumber: 0
   colorPlayer1: {r: 0.9044118, g: 0.80296355, b: 0.37905493, a: 1}
-  colorPlayer2: {r: 0.43139055, g: 0.74264705, b: 0.5365738, a: 1}
+  colorPlayer2: {r: 0.5067582, g: 0.75735295, b: 0.59240454, a: 1}
+  otherPlayer: {fileID: 0}
   aura: {fileID: 198992229594991260}
   currentBalanceDirection: 1
+  magnetStrength: 5
   BALANCE_SHIFT_TIME: 10
   auraFadeRate: 100
   neutralSpeed: 20
@@ -456,7 +450,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 2
-  randomSeed: -1060100067
+  randomSeed: 873280730
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -617,7 +611,7 @@ ParticleSystem:
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.5372549, g: 0.5372549, b: 0.48235294, a: 1}
+      maxColor: {r: 0.8117647, g: 0.8156863, b: 0.5764706, a: 1}
       minMaxState: 0
     startSize:
       scalar: 2.8
