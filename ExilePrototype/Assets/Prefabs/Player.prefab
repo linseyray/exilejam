@@ -162,7 +162,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 20
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -188,7 +188,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 5
+  m_LinearDrag: 3
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -389,9 +389,10 @@ MonoBehaviour:
   colorPlayer2: {r: 0.43139055, g: 0.74264705, b: 0.5365738, a: 1}
   aura: {fileID: 198992229594991260}
   currentBalanceDirection: 1
+  BALANCE_SHIFT_TIME: 10
   auraFadeRate: 100
   neutralSpeed: 20
-  minSpeed: 5
+  minSpeed: 10
   maxSpeed: 25
 --- !u!124 &124902945825040800
 Behaviour:

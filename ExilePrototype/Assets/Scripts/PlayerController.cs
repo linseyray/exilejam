@@ -29,9 +29,17 @@ public class PlayerController : MonoBehaviour {
 
 	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
 
-	private float automaticBalanceFactor = 0.05f;	// the speed at which emotional balance recovers on its own
+	private float roomPresenceImpact = 0.05f;		// the speed at which balance changes based on room presence
 	private float otherPlayerImpact = 0.5f;			// the amount with which the other player inclues the balance
 	private float experienceImpact = 3.0f;			// the amount with which experiences influence balance
+
+	/*********************************************************************************************************
+	 			 								ROOM STATE
+	**********************************************************************************************************/
+	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2 };
+	private PlayerLocation currentRoom;
+	[SerializeField] float BALANCE_SHIFT_TIME;
+	private float timeUntilBalanceShift;
 
 	/*********************************************************************************************************
 	 			 							VISUALISATION VARIABLES
@@ -44,6 +52,7 @@ public class PlayerController : MonoBehaviour {
 	private bool fadeInAura = false;
 	private bool fadeOutAura = false;
 
+	// Movement speed
 	private float currentSpeed;
 	[SerializeField] private float neutralSpeed;
 	[SerializeField] private float minSpeed;
@@ -87,6 +96,7 @@ public class PlayerController : MonoBehaviour {
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		cameraController.InitialiseVariables(balanceMaxBound);
 		currentSpeed = neutralSpeed;
+		MoveToRoom(PlayerLocation.CENTRAL_ROOM);
 	}
 
 	/*********************************************************************************************************
@@ -95,10 +105,17 @@ public class PlayerController : MonoBehaviour {
 	
 	void Update() {
 		Move();
-		UpdateBalance();
+		RoomPresenceEffect();
 		UpdatePlayerVision();
 		UpdatePlayerMovement();
 		UpdateAura();
+
+		// Change balance based on closeness to other player(?)
+		// TODO maybe?
+		if (isCloseToOtherPlayer) {
+		}
+		else {	
+		}
 	}
 
 	private void Move() {
@@ -108,25 +125,23 @@ public class PlayerController : MonoBehaviour {
 		rigidBody2D.AddForce(inputDirection * currentSpeed);
 	}
 
-	private void UpdateBalance() {
-		// Automatic balancing
-		balance += ((int) currentBalanceDirection) * automaticBalanceFactor;
-		balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
-
-		// Change balance based on closeness to other player
-		if (isCloseToOtherPlayer) {
+	private void RoomPresenceEffect() {
+		// Balancing based on room presence
+		if (timeUntilBalanceShift >= 0.0f) {
+			balance += ((int) currentBalanceDirection) * roomPresenceImpact;
+			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+			timeUntilBalanceShift -= Time.deltaTime;
+			if (timeUntilBalanceShift <= 0.0f)
+				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 		}
-		else {	
-		}
-
 	}
 
 	private void UpdatePlayerVision() {
-		// Slow automatic changes
-		if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR && balance <= 0.0f)
-			cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, automaticBalanceFactor);
-		if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR && balance >= 0.0f)
-			cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, automaticBalanceFactor);
+		// Slow  changes based on room presence
+		if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR/* && balance <= 0.0f*/)
+			cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, roomPresenceImpact);
+		if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR/* && balance >= 0.0f*/)
+			cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, roomPresenceImpact);
 	}
 
 	private void UpdatePlayerMovement() {
@@ -190,13 +205,26 @@ public class PlayerController : MonoBehaviour {
 			//GainPositiveExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
 		}
+		else
 		if (collider.tag == "NegativeExperience") {
 			//GainNegativeExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
 		}
+		
+		if (collider.name == "Room1") {
+			MoveToRoom(PlayerLocation.ROOM1);
+		}
+		else
+		if (collider.name == "Room2") {
+			MoveToRoom(PlayerLocation.ROOM2);
+		}
+		else
+		if (collider.name == "RoomCentral") {
+			MoveToRoom(PlayerLocation.CENTRAL_ROOM);
+		}
 	}
 
-
+	/*
 	private void GainPositiveExperience() {
 		balance += experienceImpact;
 		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
@@ -208,5 +236,12 @@ public class PlayerController : MonoBehaviour {
 		cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, experienceImpact);
 		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 	}
+	*/
 
+	private void MoveToRoom(PlayerLocation newRoom) {
+		currentRoom = newRoom;
+		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+		timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+		Debug.Log("Moved to room " + currentRoom.ToString());
+	}
 }

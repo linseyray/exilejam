@@ -41,4 +41,6 @@ public class RelationshipDynamicsController : MonoBehaviour {
 		if (player2Controller.IsCloseToOtherPlayer() && !player1Collider.IsTouching(player2AreaCollider))
 			player2Controller.OnFarFromOtherPlayer();
 	}
+
+
 }
