@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour {
 
 	private float automaticBalanceFactor = 0.05f;	// the speed at which emotional balance recovers on its own
 	private float otherPlayerImpact = 0.5f;			// the amount with which the other player inclues the balance
-	private float experienceImpact = 1.0f;			// the amount with which experiences influence emotionalBalance
+	private float experienceImpact = 3.0f;			// the amount with which experiences influence emotionalBalance
 
 	/*********************************************************************************************************
 	 			 							VISUALISATION VARIABLES
@@ -91,6 +91,8 @@ public class PlayerController : MonoBehaviour {
 	void Update() {
 		Move();
 		UpdateEmotionalBalance();
+		UpdatePlayerVision();
+		UpdatePlayerMovement();
 		UpdateAura();
 	}
 
@@ -102,22 +104,29 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void UpdateEmotionalBalance() {
-		UpdateAutomaticBalancing();
+		// Automatic balancing
+		emotionalBalance += ((int) currentBalanceDirection) * automaticBalanceFactor;
 
 		// Change emotionalBalance based on closeness to other player
 		if (isCloseToOtherPlayer) {
 		}
 		else {	
 		}
+
 	}
 
-	private void UpdateAutomaticBalancing() {
+	private void UpdatePlayerVision() {
 		// Slow automatic changes
-		emotionalBalance += ((int) currentBalanceDirection) * automaticBalanceFactor;
 		if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR && emotionalBalance <= 0.0f)
 			cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, automaticBalanceFactor);
 		if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR && emotionalBalance >= 0.0f)
 			cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, automaticBalanceFactor);
+	}
+
+	private void UpdatePlayerMovement() {
+		// slower speed
+
+		// sprite shake?
 	}
 
 	private void UpdateAura() {
@@ -145,16 +154,6 @@ public class PlayerController : MonoBehaviour {
 	 			 								PUBLIC FUNCTIONS
 	**********************************************************************************************************/
 
-	public void GainPositiveExperience() {
-		emotionalBalance += experienceImpact;
-		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
-	}
-
-	public void GainNegativeExperience() {
-		emotionalBalance -= experienceImpact;
-		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
-	}
-
 	public void OnCloseToOtherPlayer() {
 		this.isCloseToOtherPlayer = true;
 		fadeInAura = true;
@@ -168,4 +167,33 @@ public class PlayerController : MonoBehaviour {
 	public bool IsCloseToOtherPlayer() {
 		return isCloseToOtherPlayer;
 	}
+
+	/*********************************************************************************************************
+	 			 								COLLISION DETECTION
+	**********************************************************************************************************/
+
+	void OnTriggerEnter2D(Collider2D collider) {
+		if (collider.tag == "PositiveExperience") {
+			GainPositiveExperience();
+			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
+		}
+		if (collider.tag == "NegativeExperience") {
+			GainNegativeExperience();
+			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
+		}
+	}
+
+
+	private void GainPositiveExperience() {
+		emotionalBalance += experienceImpact;
+		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
+		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+	}
+
+	private void GainNegativeExperience() {
+		emotionalBalance -= experienceImpact;
+		cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, experienceImpact);
+		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
+	}
+
 }

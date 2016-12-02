@@ -41,49 +41,58 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void UpdatePlayerVision(PlayerController.BalanceDirection direction, float changeAmount) { 
-		if (direction == PlayerController.BalanceDirection.RECHARGE_FACTOR) {
-			Debug.Log("recharging");
-			// Decrease vignette
-			if (vignetteFilter.intensity >= 0.0f) 
-				vignetteFilter.intensity -= changeAmount * vignetteSpeed;
-
-			// Decrease noise
-			if (noiseFilter.grainIntensityMax >= 0.0f) {
-				noiseFilter.grainIntensityMax -= changeAmount * noiseSpeed;
-				noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
-			}
-
-			// Decrease blur
-			if (blurFilter.velocityScale >= 0.0f)
-				blurFilter.velocityScale -= changeAmount * blurSpeed;
-
-			// Increase Bloom
-			if (bloomFilter.bloomIntensity <= maxBloomIntensity)
-				bloomFilter.bloomIntensity += changeAmount * bloomSpeed;
-		}
+		if (direction == PlayerController.BalanceDirection.RECHARGE_FACTOR)
+			Recharge(changeAmount);
 		else
-		if (direction == PlayerController.BalanceDirection.DRAINING_FACTOR) {
-			Debug.Log("draining");
+		if (direction == PlayerController.BalanceDirection.DRAINING_FACTOR) 
+			Drain(changeAmount);
+	}
 
-			// Increase vignette
-			if (vignetteFilter.intensity <= maxVignetteIntensity) 
-				vignetteFilter.intensity += changeAmount * vignetteSpeed;
-	
-			// Increase noise
-			if (noiseFilter.grainIntensityMax <= maxNoiseGrainIntensity) {
-				noiseFilter.grainIntensityMax += changeAmount * noiseSpeed;
-				noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
-			}
 
-			// Increase blur
-			if (blurFilter.velocityScale <= maxBlurVeloctyScale)
-				blurFilter.velocityScale += blurSpeed;
 
-			// Decrease bloom
-			if (bloomFilter.bloomIntensity >= 0.0f)
-				bloomFilter.bloomIntensity -= changeAmount * bloomSpeed;
-			else
-				bloomFilter.bloomIntensity = 0.0f;
+	private void Recharge(float changeAmount) {
+		Debug.Log("recharging");
+
+		// Decrease vignette
+		if (vignetteFilter.intensity >= 0.0f) 
+			vignetteFilter.intensity -= changeAmount * vignetteSpeed;
+
+		// Decrease noise
+		if (noiseFilter.grainIntensityMax >= 0.0f) {
+			noiseFilter.grainIntensityMax -= changeAmount * noiseSpeed;
+			noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
 		}
+
+		// Decrease blur
+		if (blurFilter.velocityScale >= 0.0f)
+			blurFilter.velocityScale -= changeAmount * blurSpeed;
+
+		// Increase Bloom
+		if (bloomFilter.bloomIntensity <= maxBloomIntensity)
+			bloomFilter.bloomIntensity += changeAmount * bloomSpeed;
+	}
+
+	private void Drain(float changeAmount) {
+		Debug.Log("draining");
+
+		// Increase vignette
+		if (vignetteFilter.intensity <= maxVignetteIntensity) 
+			vignetteFilter.intensity += changeAmount * vignetteSpeed;
+
+		// Increase noise
+		if (noiseFilter.grainIntensityMax <= maxNoiseGrainIntensity) {
+			noiseFilter.grainIntensityMax += changeAmount * noiseSpeed;
+			noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
+		}
+
+		// Increase blur
+		if (blurFilter.velocityScale <= maxBlurVeloctyScale)
+			blurFilter.velocityScale += blurSpeed;
+
+		// Decrease bloom
+		if (bloomFilter.bloomIntensity >= 0.0f)
+			bloomFilter.bloomIntensity -= changeAmount * bloomSpeed;
+		else
+			bloomFilter.bloomIntensity = 0.0f;
 	}
 }
