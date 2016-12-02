@@ -5,6 +5,10 @@ using UnityStandardAssets.ImageEffects;
 
 public class CameraController : MonoBehaviour {
 
+	[SerializeField] float impulseSpeed = 0.5f;
+	private bool addingImpulse = false;
+	private float impulseToApply;
+
 	private VignetteAndChromaticAberration vignetteFilter;
 	[SerializeField] float maxVignetteIntensity = 0.2f;
 	[SerializeField] float vignetteSpeed = 0.01f;
@@ -38,9 +42,23 @@ public class CameraController : MonoBehaviour {
 	}
 	
 	void Update () {
+		if (addingImpulse) {
+			Recharge(impulseSpeed);
+			impulseToApply -= impulseSpeed;
+			if (impulseToApply <= 0.0f) {
+				transform.parent.GetComponent<PlayerController>().OnReuniteEffectEnded();
+			}
+		}
+	}
+
+	public void StopImpulse() {
+		addingImpulse = false;
 	}
 
 	public void UpdatePlayerVision(PlayerController.BalanceDirection direction, float changeAmount) { 
+		if (addingImpulse)
+			return;
+		
 		if (direction == PlayerController.BalanceDirection.RECHARGE_FACTOR)
 			Recharge(changeAmount);
 		else
@@ -48,6 +66,10 @@ public class CameraController : MonoBehaviour {
 			Drain(changeAmount);
 	}
 
+	public void AddPlayerVisionImpulse(float changeAmount) {
+		addingImpulse = true;
+		impulseToApply = changeAmount;
+	}
 
 	private void Recharge(float changeAmount) {
 		Debug.Log("recharging");

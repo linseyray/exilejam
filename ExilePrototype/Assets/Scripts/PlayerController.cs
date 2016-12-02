@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour {
 	private SpriteRenderer spriteRenderer;
 	private CameraController cameraController;
 
+	private bool touchedSinceEntry = false; 		// whether the player touched the other player since entering the room (UGLY CODE)
+	private bool reuniting = false;
+	[SerializeField] private float reuniteEffectLingerTime;
+
 	/*********************************************************************************************************
 	 			 							PLAYER STATE VARIABLES
 	**********************************************************************************************************/
@@ -32,14 +36,16 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private float magnetStrength;
 
 	private float roomPresenceImpact = 0.05f;		// the speed at which balance changes based on room presence
-	private float otherPlayerImpact = 0.5f;			// the amount with which the other player inclues the balance
-	private float experienceImpact = 3.0f;			// the amount with which experiences influence balance
+	private float otherPlayerImpact = 10f;			// the amount with which the other player influences the balance
+	private float experienceImpact = 0.0f;			// the amount with which experiences influence balance
+
+
 
 	/*********************************************************************************************************
 	 			 								ROOM STATE
 	**********************************************************************************************************/
-	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2 };
-	private PlayerLocation currentRoom;
+	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2, UNDECIDED };
+	private PlayerLocation currentRoom = PlayerLocation.UNDECIDED;
 	[SerializeField] float BALANCE_SHIFT_TIME;
 	private float timeUntilBalanceShift;
 
@@ -98,7 +104,6 @@ public class PlayerController : MonoBehaviour {
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		cameraController.InitialiseVariables(balanceMaxBound);
 		currentSpeed = neutralSpeed;
-		MoveToRoom(PlayerLocation.CENTRAL_ROOM);
 	}
 
 	/*********************************************************************************************************
@@ -122,6 +127,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void RoomPresenceEffect() {
+		if (reuniting)
+			return;
+
 		// Balancing based on room presence
 		if (timeUntilBalanceShift >= 0.0f) {
 			balance += ((int) currentBalanceDirection) * roomPresenceImpact;
@@ -191,6 +199,14 @@ public class PlayerController : MonoBehaviour {
 	public void OnCloseToOtherPlayer() {
 		this.isCloseToOtherPlayer = true;
 		fadeInAura = true;
+		if (!touchedSinceEntry) {
+			touchedSinceEntry = true;
+			Debug.Log(playerNumber + "reunites");
+			cameraController.AddPlayerVisionImpulse(otherPlayerImpact);
+			balance += otherPlayerImpact;
+			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+			reuniting = true;
+		}
 	}
 
 	public void OnFarFromOtherPlayer() {
@@ -201,6 +217,17 @@ public class PlayerController : MonoBehaviour {
 	public bool IsCloseToOtherPlayer() {
 		return isCloseToOtherPlayer;
 	}
+
+	public void OnReuniteEffectEnded() {
+		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
+		Invoke("StopImpulse", reuniteEffectLingerTime);
+	}
+
+	private void StopImpulse() {
+		cameraController.StopImpulse();
+		reuniting = false;
+	}
+
 
 	/*********************************************************************************************************
 	 			 								COLLISION DETECTION
@@ -245,9 +272,14 @@ public class PlayerController : MonoBehaviour {
 	*/
 
 	private void MoveToRoom(PlayerLocation newRoom) {
+		if (newRoom == currentRoom)
+			return;
+		
 		currentRoom = newRoom;
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		timeUntilBalanceShift = BALANCE_SHIFT_TIME;
-		Debug.Log("Moved to room " + currentRoom.ToString());
+		touchedSinceEntry = false;
+		otherPlayer.GetComponent<PlayerController>().touchedSinceEntry = false;
+		Debug.Log(playerNumber + " moved to room " + currentRoom.ToString());
 	}
 }
