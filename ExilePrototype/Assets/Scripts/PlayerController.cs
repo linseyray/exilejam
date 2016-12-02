@@ -18,18 +18,26 @@ public class PlayerController : MonoBehaviour {
 	private string axisV;
 	private Rigidbody2D rigidBody2D;
 	private SpriteRenderer spriteRenderer;
+	private CameraController cameraController;
 
 	/*********************************************************************************************************
 	 			 							PLAYER STATE VARIABLES
 	**********************************************************************************************************/
 	private float emotionalBalance = 0.0f;			// in a range from -5 to +5 (0 is neutral)
+	private float balanceMaxBound = 5.0f;
+	public enum BalanceDirection { DRAINING_FACTOR = -1, RECHARGE_FACTOR = +1 };
+	public BalanceDirection currentBalanceDirection;
+
 	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
-	private float automaticRecoveryFactor = 0.25f;	// the speed at which emotional balance recovers on its own
+
+	private float automaticBalanceFactor = 0.05f;	// the speed at which emotional balance recovers on its own
+	private float otherPlayerImpact = 0.5f;			// the amount with which the other player inclues the balance
 	private float experienceImpact = 1.0f;			// the amount with which experiences influence emotionalBalance
 
 	/*********************************************************************************************************
 	 			 							VISUALISATION VARIABLES
 	**********************************************************************************************************/
+	// Nearness Aura
 	[SerializeField] private float auraFadeRate = 5.0f;
 	private float maxAuraEmissionRate;
 	private ParticleSystem.EmissionModule emission;
@@ -44,6 +52,7 @@ public class PlayerController : MonoBehaviour {
 	void Awake() {
 		rigidBody2D = GetComponent<Rigidbody2D>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		cameraController = GetComponentInChildren<CameraController>();
 	}
 
 	void Start () {
@@ -70,7 +79,9 @@ public class PlayerController : MonoBehaviour {
 		emission.rateOverTime = emissionRateOverTime;
 		emission = emission;
 
-
+		// Setup emotional balance
+		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+		cameraController.InitialiseVariables(balanceMaxBound);
 	}
 
 	/*********************************************************************************************************
@@ -91,24 +102,39 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void UpdateEmotionalBalance() {
-		// Change emotionalBalance based on closeness
+		UpdateAutomaticBalancing();
+
+		// Change emotionalBalance based on closeness to other player
 		if (isCloseToOtherPlayer) {
 		}
-		else {
+		else {	
 		}
+	}
+
+	private void UpdateAutomaticBalancing() {
+		// Slow automatic changes
+		emotionalBalance += ((int) currentBalanceDirection) * automaticBalanceFactor;
+		if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR && emotionalBalance <= 0.0f)
+			cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, automaticBalanceFactor);
+		if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR && emotionalBalance >= 0.0f)
+			cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, automaticBalanceFactor);
 	}
 
 	private void UpdateAura() {
 		if (fadeInAura) {
 			emissionRateOverTime.constant += auraFadeRate;
-			if (emissionRateOverTime.constant >= maxAuraEmissionRate)
+			if (emissionRateOverTime.constant >= maxAuraEmissionRate) {
+				emissionRateOverTime = maxAuraEmissionRate;
 				fadeInAura = false;
+			}
 		}
 
 		if (fadeOutAura) {
 			emissionRateOverTime.constant -= auraFadeRate;
-			if (emissionRateOverTime.constant <= 0.0f)
+			if (emissionRateOverTime.constant <= 0.0f) {
+				emissionRateOverTime = 0.0f;
 				fadeOutAura = false;
+			}
 		}
 
 		// Update particle system
@@ -120,9 +146,13 @@ public class PlayerController : MonoBehaviour {
 	**********************************************************************************************************/
 
 	public void GainPositiveExperience() {
+		emotionalBalance += experienceImpact;
+		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
 	}
 
 	public void GainNegativeExperience() {
+		emotionalBalance -= experienceImpact;
+		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
 	}
 
 	public void OnCloseToOtherPlayer() {
