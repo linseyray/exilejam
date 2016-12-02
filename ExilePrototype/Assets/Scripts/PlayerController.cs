@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private Color colorPlayer2;
 	[SerializeField] private GameObject otherPlayer;
 	[SerializeField] private ParticleSystem aura;
+	[SerializeField] private SoundController soundController;
+
 
 	private enum Player { PLAYER_ONE, PLAYER_TWO };
 	private string axisH;
@@ -130,10 +132,12 @@ public class PlayerController : MonoBehaviour {
 		if (reuniting)
 			return;
 
-		// Balancing based on room presence
+		// Update balance
+		balance += ((int) currentBalanceDirection) * roomPresenceImpact;
+		balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+
+		// Balance shift after some time in room
 		if (timeUntilBalanceShift >= 0.0f) {
-			balance += ((int) currentBalanceDirection) * roomPresenceImpact;
-			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
 			timeUntilBalanceShift -= Time.deltaTime;
 			if (timeUntilBalanceShift <= 0.0f)
 				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
@@ -206,6 +210,7 @@ public class PlayerController : MonoBehaviour {
 			balance += otherPlayerImpact;
 			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
 			reuniting = true;
+			soundController.PlayReuniteSound();
 		}
 	}
 
@@ -227,6 +232,15 @@ public class PlayerController : MonoBehaviour {
 		cameraController.StopImpulse();
 		reuniting = false;
 	}
+
+	public float GetBalance() {
+		return balance;
+	}
+
+	public float GetBalanceMaxBound() {
+		return balanceMaxBound;
+	}
+
 
 
 	/*********************************************************************************************************
