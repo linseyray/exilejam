@@ -19,10 +19,10 @@ TagManager:
   - Experiences
   - PathBlocks
   - ConnectionAreas
-  - 
-  - 
-  - 
-  - 
+  - PathBlockPlayer1
+  - PathBlockPlayer2
+  - Player1
+  - Player2
   - 
   - 
   - 

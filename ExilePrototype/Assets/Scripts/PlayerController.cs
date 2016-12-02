@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour {
 	/*********************************************************************************************************
 	 			 							GENERAL VARIABLES
 	**********************************************************************************************************/
-	[SerializeField] private float speed;
 	[SerializeField] private Player playerNumber;
 	[SerializeField] private Color colorPlayer1;
 	[SerializeField] private Color colorPlayer2;
@@ -44,6 +43,11 @@ public class PlayerController : MonoBehaviour {
 	private ParticleSystem.MinMaxCurve emissionRateOverTime;
 	private bool fadeInAura = false;
 	private bool fadeOutAura = false;
+
+	private float currentSpeed;
+	[SerializeField] private float neutralSpeed;
+	[SerializeField] private float minSpeed;
+	[SerializeField] private float maxSpeed;
 
 	/*********************************************************************************************************
 	 			 								INITIALISATION
@@ -82,6 +86,7 @@ public class PlayerController : MonoBehaviour {
 		// Setup emotional balance
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		cameraController.InitialiseVariables(balanceMaxBound);
+		currentSpeed = neutralSpeed;
 	}
 
 	/*********************************************************************************************************
@@ -100,12 +105,13 @@ public class PlayerController : MonoBehaviour {
 		float moveHorizontal = Input.GetAxis(axisH);
 		float moveVertical = Input.GetAxis(axisV);
 		Vector2 inputDirection = new Vector2(moveHorizontal, moveVertical);
-		rigidBody2D.AddForce(inputDirection * speed);
+		rigidBody2D.AddForce(inputDirection * currentSpeed);
 	}
 
 	private void UpdateEmotionalBalance() {
 		// Automatic balancing
 		emotionalBalance += ((int) currentBalanceDirection) * automaticBalanceFactor;
+		emotionalBalance = Mathf.Clamp(emotionalBalance, -balanceMaxBound, balanceMaxBound);
 
 		// Change emotionalBalance based on closeness to other player
 		if (isCloseToOtherPlayer) {
@@ -124,8 +130,15 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void UpdatePlayerMovement() {
-		// slower speed
-
+		if (emotionalBalance < 0.0f) {
+			if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR && currentSpeed > minSpeed)
+				currentSpeed -= 0.1f;
+			if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR && currentSpeed < 0.0f)
+				currentSpeed += 0.1f;
+		}
+		if (emotionalBalance > 0.0f)
+			currentSpeed = neutralSpeed;
+				
 		// sprite shake?
 	}
 

@@ -49,7 +49,6 @@ public class CameraController : MonoBehaviour {
 	}
 
 
-
 	private void Recharge(float changeAmount) {
 		Debug.Log("recharging");
 
