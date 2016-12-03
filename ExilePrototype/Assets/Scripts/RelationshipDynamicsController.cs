@@ -35,6 +35,7 @@ public class RelationshipDynamicsController : MonoBehaviour {
 	}
 
 	void Start () {
+		Screen.fullScreen = true;
 	}
 	
 	void Update () {
@@ -91,6 +92,9 @@ public class RelationshipDynamicsController : MonoBehaviour {
 				hidingPath = false;
 			}
 		}
+
+		if (Input.GetButton("ToggleFullscreen"))
+			Screen.fullScreen = !Screen.fullScreen;
 
 	}
 
