@@ -9,8 +9,10 @@ public class SoundController : MonoBehaviour {
 	[SerializeField] private AudioSource reuniteAudioSource;
 
 
-	[SerializeField] AudioSource positiveStateSource;
-	[SerializeField] AudioSource negativeStateSource;
+	[SerializeField] private AudioSource positiveStateSource;
+	[SerializeField] private AudioSource negativeStateSource;
+
+	[SerializeField] private float minPositiveStateVolume = 0.3f;
 
 	private float minBalanceTotal;
 	private float maxBalanceTotal;
@@ -29,22 +31,21 @@ public class SoundController : MonoBehaviour {
 		float player2Balance = player2Controller.GetBalance();
 		float totalBalance = player1Controller.GetBalance() + player2Controller.GetBalance();
 		Debug.Log("player1 balance: " + player1Controller.GetBalance() + " player2 balance: " + player1Controller.GetBalance());
-		Debug.Log(totalBalance);
 
 		if (player1Balance >= 0.0f && player2Balance >= 0.0f) {
 			// Both players are balanced
-			positiveStateSource.volume = Mathf.Max(player1Balance, player2Balance) / 5f;
+			positiveStateSource.volume = (player1Balance + player2Balance) / 10f;
 			negativeStateSource.volume = 0.0f;
 		}
 		else
-		if (player1Balance <= 0.0f && player2Balance <= 0.0f) {
+		if (player1Balance < 0.0f && player2Balance < 0.0f) {
 			// Both players are unbalanced
 			positiveStateSource.volume = 0.3f;
-			negativeStateSource.volume = Mathf.Abs(Mathf.Min(player1Balance, player2Balance)) / 5f;
+			negativeStateSource.volume = (Mathf.Abs(player1Balance) + Mathf.Abs(player2Balance)) / 10f;
 		}
 		else {
-			positiveStateSource.volume = Mathf.Max(player1Balance, player2Balance) / 5f;
-			negativeStateSource.volume = Mathf.Abs(Mathf.Min(player1Balance, player2Balance)) / 5f;
+			positiveStateSource.volume = Mathf.Clamp(player1Balance + player2Balance / 10f, minPositiveStateVolume, 1);
+				negativeStateSource.volume = (player1Balance + player2Balance) / 10f;
 		}
 	}
 
