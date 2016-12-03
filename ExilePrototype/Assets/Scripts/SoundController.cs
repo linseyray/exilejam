@@ -30,7 +30,6 @@ public class SoundController : MonoBehaviour {
 		float player1Balance = player1Controller.GetBalance();
 		float player2Balance = player2Controller.GetBalance();
 		float totalBalance = player1Controller.GetBalance() + player2Controller.GetBalance();
-		Debug.Log("player1 balance: " + player1Controller.GetBalance() + " player2 balance: " + player1Controller.GetBalance());
 
 		if (player1Balance >= 0.0f && player2Balance >= 0.0f) {
 			// Both players are balanced

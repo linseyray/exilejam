@@ -22,9 +22,6 @@ public class PlayerController : MonoBehaviour {
 	private SpriteRenderer spriteRenderer;
 	private CameraController cameraController;
 
-	private bool touchedSinceEntry = false; 		// whether the player touched the other player since entering the room (UGLY CODE)
-	private bool reuniting = false;
-	[SerializeField] private float reuniteEffectLingerTime;
 
 	/*********************************************************************************************************
 	 			 							PLAYER STATE VARIABLES
@@ -67,6 +64,14 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private float neutralSpeed;
 	[SerializeField] private float minSpeed;
 	[SerializeField] private float maxSpeed;
+
+
+	/*********************************************************************************************************
+	 			 							REUNITING VARIABLES
+	**********************************************************************************************************/
+	private bool touchedSinceEntry = true; 		// whether the player touched the other player since entering the room (UGLY CODE)
+	private bool reuniting = false;
+	[SerializeField] private float reuniteEffectLingerTime;
 
 	/*********************************************************************************************************
 	 			 								INITIALISATION
@@ -129,17 +134,18 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void RoomPresenceEffect() {
-		if (reuniting)
-			return;
+		//if (reuniting)
+		//	return;
 
 		// Update balance
 		balance += ((int) currentBalanceDirection) * roomPresenceImpact;
 		balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+		Debug.Log(playerNumber + " balance: " + balance);
 
 		// Balance shift after some time in room
 		if (timeUntilBalanceShift >= 0.0f) {
 			timeUntilBalanceShift -= Time.deltaTime;
-			if (timeUntilBalanceShift <= 0.0f)
+			if (timeUntilBalanceShift <= 0.0f) 
 				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 		}
 	}
@@ -203,12 +209,19 @@ public class PlayerController : MonoBehaviour {
 	public void OnCloseToOtherPlayer() {
 		this.isCloseToOtherPlayer = true;
 		fadeInAura = true;
+
+		// Flash effect 
+		cameraController.FlashEffect();
+
+		// Reunite effect
 		if (!touchedSinceEntry) {
 			touchedSinceEntry = true;
-			Debug.Log(playerNumber + "reunites");
+			Debug.Log(playerNumber + " reunites");
 			cameraController.AddPlayerVisionImpulse(otherPlayerImpact);
 			balance += otherPlayerImpact;
 			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
 			reuniting = true;
 			soundController.PlayReuniteSound();
 		}
@@ -224,13 +237,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void OnReuniteEffectEnded() {
-		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 		Invoke("StopImpulse", reuniteEffectLingerTime);
 	}
 
 	private void StopImpulse() {
 		cameraController.StopImpulse();
 		reuniting = false;
+		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 	}
 
 	public float GetBalance() {

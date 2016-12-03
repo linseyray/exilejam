@@ -5,9 +5,23 @@ using UnityStandardAssets.ImageEffects;
 
 public class CameraController : MonoBehaviour {
 
+	// Impulse
 	[SerializeField] float impulseSpeed = 0.5f;
 	private bool addingImpulse = false;
 	private float impulseToApply;
+
+	// Flash
+	private float bloomVelocity = 0.0f;
+	private float vignetteVelocity = 0.0f;
+	private float noiseVelocity = 0.0f;
+	[SerializeField] private float flashTime = 1f;
+	[SerializeField] private float implodingFlashTime = 1f;
+	private bool flashing = false;
+	private bool implodingFlash = false;
+	private float flashBloomIntensity = 0.01f;
+	private float flashEndNoiseIntensity;
+	private float flashEndBloomIntensity;
+	private float flashEndVignetteIntensity;
 
 	private VignetteAndChromaticAberration vignetteFilter;
 	[SerializeField] float maxVignetteIntensity = 0.2f;
@@ -48,6 +62,23 @@ public class CameraController : MonoBehaviour {
 			if (impulseToApply <= 0.0f) {
 				transform.parent.GetComponent<PlayerController>().OnReuniteEffectEnded();
 			}
+		}
+
+		if (flashing) {
+			//vignetteFilter.intensity = 0.0f;
+			//noiseFilter.grainIntensityMax = 0.0f;
+			//bloomFilter.bloomIntensity = maxBloomIntensity / 2;
+			bloomFilter.bloomIntensity = Mathf.SmoothDamp(bloomFilter.bloomIntensity, Mathf.Max(flashBloomIntensity, bloomFilter.bloomIntensity), ref bloomVelocity, flashTime);
+			vignetteFilter.intensity = Mathf.SmoothDamp(vignetteFilter.intensity, 0.0f, ref vignetteVelocity, flashTime);
+			noiseFilter.grainIntensityMax = Mathf.SmoothDamp(noiseFilter.grainIntensityMax, 0.0f, ref noiseVelocity, flashTime);
+			noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
+		}
+		if (implodingFlash) {
+			noiseFilter.grainIntensityMax = Mathf.SmoothDamp(noiseFilter.grainIntensityMax, flashEndNoiseIntensity, ref noiseVelocity, implodingFlashTime);
+			noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
+			bloomFilter.bloomIntensity = Mathf.SmoothDamp(bloomFilter.bloomIntensity, flashEndBloomIntensity, ref bloomVelocity, implodingFlashTime);
+			vignetteFilter.intensity = Mathf.SmoothDamp(vignetteFilter.intensity, flashEndVignetteIntensity, ref vignetteVelocity, implodingFlashTime);
+
 		}
 	}
 
@@ -115,5 +146,32 @@ public class CameraController : MonoBehaviour {
 			bloomFilter.bloomIntensity -= changeAmount * bloomSpeed;
 		else
 			bloomFilter.bloomIntensity = 0.0f;
+	}
+
+	public void FlashEffect() {
+		flashing = true;
+
+		bloomVelocity = 0.0f;
+		vignetteVelocity = 0.0f;
+		noiseVelocity = 0.0f;
+
+		flashEndVignetteIntensity = vignetteFilter.intensity;
+		flashEndBloomIntensity = bloomFilter.bloomIntensity;
+		flashEndNoiseIntensity = noiseFilter.grainIntensityMax;
+
+		Invoke("StopFlash", flashTime);
+	}
+
+	private void StopFlash() {
+		flashing = false;
+		implodingFlash = true;
+		bloomVelocity = 0.0f;
+		vignetteVelocity = 0.0f;
+		noiseVelocity = 0.0f;
+		Invoke("StopImplode", implodingFlashTime);
+	}
+
+	private void StopImplode() {
+		implodingFlash = false;
 	}
 }

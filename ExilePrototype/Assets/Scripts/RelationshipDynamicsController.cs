@@ -7,6 +7,9 @@ public class RelationshipDynamicsController : MonoBehaviour {
 	[SerializeField] private GameObject player1;
 	[SerializeField] private GameObject player2;
 
+	[SerializeField] private AudioClip onCloseAudioClip;
+
+	private AudioSource onCloseAudioSource;
 	private PlayerController player1Controller;
 	private PlayerController player2Controller;
 	private BoxCollider2D player1Collider;
@@ -21,6 +24,7 @@ public class RelationshipDynamicsController : MonoBehaviour {
 		player2AreaCollider = player2.GetComponentInChildren<CircleCollider2D>();
 		player1Controller = player1.GetComponent<PlayerController>();
 		player2Controller = player2.GetComponent<PlayerController>();
+		onCloseAudioSource = GetComponent<AudioSource>();
 	}
 
 	void Start () {
@@ -28,19 +32,24 @@ public class RelationshipDynamicsController : MonoBehaviour {
 	
 	void Update () {
 		// P2 entered P1's area
-		if (!player1Controller.IsCloseToOtherPlayer() && player2Collider.IsTouching(player1AreaCollider))
+		if (!player1Controller.IsCloseToOtherPlayer() && player2Collider.IsTouching(player1AreaCollider)) {
 			player1Controller.OnCloseToOtherPlayer();
+			if (!onCloseAudioSource.isPlaying)
+				onCloseAudioSource.PlayOneShot(onCloseAudioClip);
+
+		}
 		// P2 left P1's area
 		if (player1Controller.IsCloseToOtherPlayer() && !player2Collider.IsTouching(player1AreaCollider))
 			player1Controller.OnFarFromOtherPlayer();
 
 		// P1 entered P2's area
-		if (!player2Controller.IsCloseToOtherPlayer() && player1Collider.IsTouching(player2AreaCollider))
+		if (!player2Controller.IsCloseToOtherPlayer() && player1Collider.IsTouching(player2AreaCollider)) {
 			player2Controller.OnCloseToOtherPlayer();
+			//if (!onCloseAudioSource.isPlaying)
+				//onCloseAudioSource.PlayOneShot(onCloseAudioClip);
+		}
 		// P1 left P2's area
 		if (player2Controller.IsCloseToOtherPlayer() && !player1Collider.IsTouching(player2AreaCollider))
 			player2Controller.OnFarFromOtherPlayer();
 	}
-
-
 }
