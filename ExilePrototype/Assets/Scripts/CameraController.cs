@@ -103,8 +103,6 @@ public class CameraController : MonoBehaviour {
 	}
 
 	private void Recharge(float changeAmount) {
-		Debug.Log("recharging");
-
 		// Decrease vignette
 		if (vignetteFilter.intensity >= 0.0f) 
 			vignetteFilter.intensity -= changeAmount * vignetteSpeed;
@@ -125,8 +123,6 @@ public class CameraController : MonoBehaviour {
 	}
 
 	private void Drain(float changeAmount) {
-		Debug.Log("draining");
-
 		// Increase vignette
 		if (vignetteFilter.intensity <= maxVignetteIntensity) 
 			vignetteFilter.intensity += changeAmount * vignetteSpeed;

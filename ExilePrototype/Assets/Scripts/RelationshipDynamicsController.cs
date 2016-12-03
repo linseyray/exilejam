@@ -9,6 +9,13 @@ public class RelationshipDynamicsController : MonoBehaviour {
 
 	[SerializeField] private AudioClip onCloseAudioClip;
 
+	[SerializeField] private SpriteRenderer pathBlockerRenderer;
+	[SerializeField] private Collider2D pathBlockerCollider;
+	private float pathFadeSpeed = 0.1f;
+	private bool hidingPath = false;
+	private bool showingPath = false;
+
+
 	private AudioSource onCloseAudioSource;
 	private PlayerController player1Controller;
 	private PlayerController player2Controller;
@@ -34,13 +41,15 @@ public class RelationshipDynamicsController : MonoBehaviour {
 		// P2 entered P1's area
 		if (!player1Controller.IsCloseToOtherPlayer() && player2Collider.IsTouching(player1AreaCollider)) {
 			player1Controller.OnCloseToOtherPlayer();
+
+			// Play sound
 			if (!onCloseAudioSource.isPlaying)
 				onCloseAudioSource.PlayOneShot(onCloseAudioClip);
-
 		}
 		// P2 left P1's area
-		if (player1Controller.IsCloseToOtherPlayer() && !player2Collider.IsTouching(player1AreaCollider))
+		if (player1Controller.IsCloseToOtherPlayer() && !player2Collider.IsTouching(player1AreaCollider)) {
 			player1Controller.OnFarFromOtherPlayer();
+		}
 
 		// P1 entered P2's area
 		if (!player2Controller.IsCloseToOtherPlayer() && player1Collider.IsTouching(player2AreaCollider)) {
@@ -51,5 +60,53 @@ public class RelationshipDynamicsController : MonoBehaviour {
 		// P1 left P2's area
 		if (player2Controller.IsCloseToOtherPlayer() && !player1Collider.IsTouching(player2AreaCollider))
 			player2Controller.OnFarFromOtherPlayer();
+
+
+
+		// Path blocker
+		if ((player1Controller.IsCloseToOtherPlayer() || player2Controller.IsCloseToOtherPlayer()) && 
+			(pathBlockerCollider.IsTouching(player1AreaCollider) || pathBlockerCollider.IsTouching(player2AreaCollider))) {
+			ShowPath();
+		} 
+		else
+		if (!showingPath && player1Controller.GetLocation() != PlayerController.PlayerLocation.ROOM3 && 
+			player2Controller.GetLocation() != PlayerController.PlayerLocation.ROOM3) {
+			HidePath();
+		}
+
+		if (showingPath) {
+			Color newColor = pathBlockerRenderer.color;
+			newColor.a -= pathFadeSpeed;
+			pathBlockerRenderer.color = newColor;
+			if (newColor.a <= 0.0f) {
+				showingPath = false;
+			}
+		}
+
+		if (hidingPath) {
+			Color newColor = pathBlockerRenderer.color;
+			newColor.a += pathFadeSpeed;
+			pathBlockerRenderer.color = newColor;
+			if (newColor.a >= 1.0f) {
+				hidingPath = false;
+			}
+		}
+
+	}
+
+	private void ShowPath() {
+		Debug.Log("ShowingPath");
+		hidingPath = false;
+		showingPath = true;
+		pathBlockerCollider.enabled = false;
+	}
+
+	public void HidePath() {
+		//if (player1Collider.IsTouching(pathBlockerCollider) || player2Collider.IsTouching(pathBlockerCollider)) 
+		//	return;
+		Debug.Log("HidingPath");
+		hidingPath = true;
+		showingPath = false;
+		pathBlockerCollider.enabled = true;
 	}
 }

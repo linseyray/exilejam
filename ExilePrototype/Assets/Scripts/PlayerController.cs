@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private GameObject otherPlayer;
 	[SerializeField] private ParticleSystem aura;
 	[SerializeField] private SoundController soundController;
+	[SerializeField] private RelationshipDynamicsController relationshipDynamicsController;
 
 
 	private enum Player { PLAYER_ONE, PLAYER_TWO };
@@ -43,7 +44,7 @@ public class PlayerController : MonoBehaviour {
 	/*********************************************************************************************************
 	 			 								ROOM STATE
 	**********************************************************************************************************/
-	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2, UNDECIDED };
+	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2, ROOM3, UNDECIDED };
 	private PlayerLocation currentRoom = PlayerLocation.UNDECIDED;
 	[SerializeField] float BALANCE_SHIFT_TIME;
 	private float timeUntilBalanceShift;
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour {
 		// Update balance
 		balance += ((int) currentBalanceDirection) * roomPresenceImpact;
 		balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
-		Debug.Log(playerNumber + " balance: " + balance);
+		//Debug.Log(playerNumber + " balance: " + balance);
 
 		// Balance shift after some time in room
 		if (timeUntilBalanceShift >= 0.0f) {
@@ -216,7 +217,7 @@ public class PlayerController : MonoBehaviour {
 		// Reunite effect
 		if (!touchedSinceEntry) {
 			touchedSinceEntry = true;
-			Debug.Log(playerNumber + " reunites");
+			//Debug.Log(playerNumber + " reunites");
 			cameraController.AddPlayerVisionImpulse(otherPlayerImpact);
 			balance += otherPlayerImpact;
 			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
@@ -282,6 +283,14 @@ public class PlayerController : MonoBehaviour {
 		if (collider.name == "RoomCentral") {
 			MoveToRoom(PlayerLocation.CENTRAL_ROOM);
 		}
+		else
+		if (collider.name == "Room3") {
+			MoveToRoom(PlayerLocation.ROOM3);				
+		}
+	}
+
+	public PlayerLocation GetLocation() {
+		return currentRoom;
 	}
 
 	/*
