@@ -211,7 +211,7 @@ public class PlayerController : MonoBehaviour {
 			}
 
 
-			if (Input.GetAxis(magnetTrigger) == 1)  {
+			if (Input.GetAxis(magnetTrigger) >= 0.75f || Input.GetAxis(magnetTrigger) <= -0.75f)  {
 				Debug.Log("Magnet trigger held down");
 				// Add small force toward other player
 				Vector2 targetPoint = otherPlayer.transform.position;
