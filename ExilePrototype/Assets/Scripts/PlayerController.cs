@@ -210,7 +210,8 @@ public class PlayerController : MonoBehaviour {
 				rigidBody2D.AddForce(forceDirection * magnetStrength);
 			}
 
-			float triggerAxis = Debug.Log(Input.GetAxis(magnetTrigger));
+			float triggerAxis = Input.GetAxis(magnetTrigger);
+			Debug.Log(triggerAxis);
 			if (triggerAxis >= 1 || triggerAxis <= -1)  {
 				Debug.Log("Magnet trigger held down");
 				// Add small force toward other player
