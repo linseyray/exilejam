@@ -21,8 +21,10 @@ public class PlayerController : MonoBehaviour {
 	private string axisV;
 	private string magnetButton;
 	private string magnetTrigger;
+	private string magnetTriggerOther;
 	private Rigidbody2D rigidBody2D;
 	private SpriteRenderer spriteRenderer;
+	private SpriteShake spriteShakeController;
 	private CameraController cameraController;
 
 
@@ -36,6 +38,10 @@ public class PlayerController : MonoBehaviour {
 
 	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
 	[SerializeField] private float magnetStrength;
+	[SerializeField] private float magnetToleranceTime; 	// Time until one player starts shaking when other keeps 
+															// seeking contact (activating magnet)
+	private float timeTillMagnetToleranceBreak = 0.0f;		
+	private bool breakingTolerance = false;
 
 	private float roomPresenceImpact = 0.05f;		// the speed at which balance changes based on room presence
 	private float otherPlayerImpact = 10f;			// the amount with which the other player influences the balance
@@ -82,7 +88,9 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake() {
 		rigidBody2D = GetComponent<Rigidbody2D>();
-		spriteRenderer = GetComponent<SpriteRenderer>();
+		spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+		spriteShakeController = spriteRenderer.gameObject.GetComponent<SpriteShake>();
+		spriteShakeController.enabled = false;
 		cameraController = GetComponentInChildren<CameraController>();
 	}
 
@@ -93,6 +101,7 @@ public class PlayerController : MonoBehaviour {
 			axisV = "P1_Vertical";
 			magnetButton = "P1_MagnetButton";
 			magnetTrigger = "P1_MagnetTrigger";
+			magnetTriggerOther = "P2_MagnetTrigger";
 			spriteRenderer.color = colorPlayer1;
 
 		}
@@ -101,6 +110,7 @@ public class PlayerController : MonoBehaviour {
 			axisV = "P2_Vertical";
 			magnetButton = "P2_MagnetButton";
 			magnetTrigger = "P2_MagnetTrigger";
+			magnetTriggerOther = "P1_MagnetTrigger";
 			spriteRenderer.color = colorPlayer2;
 		}
 
@@ -211,9 +221,28 @@ public class PlayerController : MonoBehaviour {
 			else
 				fadeOutAura = true;
 
-			if (MapAxisValue(Input.GetAxis("P1_MagnetTrigger")) >= 1 && 
-				MapAxisValue(Input.GetAxis("P2_MagnetTrigger")) >= 1)
+			if (MapAxisValue(Input.GetAxis(magnetTrigger)) >= 1 && 
+				MapAxisValue(Input.GetAxis(magnetTriggerOther)) >= 1) {
+				// Double the magnet force, because both want to seek contact
 				AddMagnetForce();
+				spriteShakeController.enabled = false;
+				breakingTolerance = false;
+			}
+			else
+			if (MapAxisValue(Input.GetAxis(magnetTrigger)) < 1 &&
+				MapAxisValue(Input.GetAxis(magnetTriggerOther)) >= 1) {
+					if (!breakingTolerance) {
+						breakingTolerance = true;
+						timeTillMagnetToleranceBreak = magnetToleranceTime;
+					}
+					timeTillMagnetToleranceBreak -= Time.deltaTime;
+					if (timeTillMagnetToleranceBreak <= 0.0f)
+						spriteShakeController.enabled = true;
+			}
+			else {
+				spriteShakeController.enabled = false;
+				breakingTolerance = false;
+			}
 		}
 	}
 
