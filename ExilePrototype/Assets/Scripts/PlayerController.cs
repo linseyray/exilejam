@@ -130,7 +130,6 @@ public class PlayerController : MonoBehaviour {
 		UpdatePlayerVision();
 		UpdatePlayerMovement();
 		UpdateAura();
-		MagnetMechanic();
 	}
 
 	private void Move() {
@@ -200,23 +199,14 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void MagnetMechanic() {
-		float triggerAxis = Input.GetAxis(magnetTrigger);
-		triggerAxis = (triggerAxis + 1f) / 2.0f;
-		Debug.Log(triggerAxis);
 
 		if (isCloseToOtherPlayer) {
-			if (Input.GetButton(magnetButton)) {
-				Debug.Log("Magnet button held down");
-				// Add small force toward other player
-				Vector2 targetPoint = otherPlayer.transform.position;
-				Vector2 currentPosition = transform.position;
-				Vector2 forceDirection = targetPoint - currentPosition;
-				rigidBody2D.AddForce(forceDirection * magnetStrength);
-			}
-
-
+			float triggerAxis = Input.GetAxis(magnetTrigger);
+			triggerAxis = (triggerAxis + 1f) / 2.0f;
+			//Debug.Log(triggerAxis);
 			if (triggerAxis >= 1)  {
 				Debug.Log("Magnet trigger held down");
+				fadeInAura = true; // Activates aura
 				// Add small force toward other player
 				Vector2 targetPoint = otherPlayer.transform.position;
 				Vector2 currentPosition = transform.position;
@@ -232,7 +222,8 @@ public class PlayerController : MonoBehaviour {
 
 	public void OnCloseToOtherPlayer() {
 		this.isCloseToOtherPlayer = true;
-		fadeInAura = true;
+
+		MagnetMechanic();
 
 		// Flash effect 
 		cameraController.FlashEffect();
