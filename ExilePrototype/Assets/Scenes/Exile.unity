@@ -703,6 +703,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: magnetToleranceTime
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 212586592761706010, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
@@ -1127,6 +1132,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4086428332909464, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: magnetToleranceTime
       value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents:

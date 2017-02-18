@@ -244,6 +244,10 @@ public class PlayerController : MonoBehaviour {
 				breakingTolerance = false;
 			}
 		}
+		else {
+			breakingTolerance = false;
+			spriteShakeController.enabled = false;
+		}
 	}
 
 	private void AddMagnetForce() {
