@@ -263,12 +263,12 @@ public class PlayerController : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.tag == "PositiveExperience") {
-			//GainPositiveExperience();
+			GainPositiveExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
 		}
 		else
 		if (collider.tag == "NegativeExperience") {
-			//GainNegativeExperience();
+			GainNegativeExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
 		}
 		
@@ -293,7 +293,7 @@ public class PlayerController : MonoBehaviour {
 		return currentRoom;
 	}
 
-	/*
+
 	private void GainPositiveExperience() {
 		balance += experienceImpact;
 		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
@@ -305,17 +305,21 @@ public class PlayerController : MonoBehaviour {
 		cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, experienceImpact);
 		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 	}
-	*/
+
 
 	private void MoveToRoom(PlayerLocation newRoom) {
 		if (newRoom == currentRoom)
 			return;
 		
 		currentRoom = newRoom;
-		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
-		timeUntilBalanceShift = BALANCE_SHIFT_TIME;
 		touchedSinceEntry = false;
 		otherPlayer.GetComponent<PlayerController>().touchedSinceEntry = false;
 		Debug.Log(playerNumber + " moved to room " + currentRoom.ToString());
+
+		// Recharge when entering a room 
+		if (currentRoom != PlayerLocation.CENTRAL_ROOM) {
+			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+		}
 	}
 }
