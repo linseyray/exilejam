@@ -213,6 +213,8 @@ public class PlayerController : MonoBehaviour {
 				Vector2 forceDirection = targetPoint - currentPosition;
 				rigidBody2D.AddForce(forceDirection * magnetStrength);
 			}
+			else
+				fadeOutAura = true;
 		}
 	}
 
