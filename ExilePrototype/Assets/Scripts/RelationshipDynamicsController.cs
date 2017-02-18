@@ -93,7 +93,7 @@ public class RelationshipDynamicsController : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetButton("ToggleFullscreen"))
+		if (Input.GetButtonDown("ToggleFullscreen"))
 			Screen.fullScreen = !Screen.fullScreen;
 
 	}
