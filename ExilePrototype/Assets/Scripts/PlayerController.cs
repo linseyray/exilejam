@@ -202,21 +202,31 @@ public class PlayerController : MonoBehaviour {
 	private void MagnetMechanic() {
 
 		if (isCloseToOtherPlayer) {
-			float triggerAxis = Input.GetAxis(magnetTrigger);
-			triggerAxis = (triggerAxis + 1f) / 2.0f;
-			//Debug.Log(triggerAxis);
+			float triggerAxis = MapAxisValue(Input.GetAxis(magnetTrigger));
 			if (triggerAxis >= 1)  {
 				Debug.Log("Magnet trigger held down");
 				fadeInAura = true; // Activates aura
-				// Add small force toward other player
-				Vector2 targetPoint = otherPlayer.transform.position;
-				Vector2 currentPosition = transform.position;
-				Vector2 forceDirection = targetPoint - currentPosition;
-				rigidBody2D.AddForce(forceDirection * magnetStrength);
+				AddMagnetForce();
 			}
 			else
 				fadeOutAura = true;
+
+			if (MapAxisValue(Input.GetAxis("P1_MagnetTrigger")) >= 1 && 
+				MapAxisValue(Input.GetAxis("P2_MagnetTrigger")) >= 1)
+				AddMagnetForce();
 		}
+	}
+
+	private void AddMagnetForce() {
+		// Add small force toward other player
+		Vector2 targetPoint = otherPlayer.transform.position;
+		Vector2 currentPosition = transform.position;
+		Vector2 forceDirection = targetPoint - currentPosition;
+		rigidBody2D.AddForce(forceDirection * magnetStrength);
+	}
+
+	private float MapAxisValue(float axisValue) {
+		return (axisValue + 1f) / 2.0f;
 	}
 
 	/*********************************************************************************************************
