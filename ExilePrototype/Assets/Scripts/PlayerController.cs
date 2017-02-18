@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
 	private string axisH;
 	private string axisV;
 	private string magnetButton;
+	private string magnetTrigger;
 	private Rigidbody2D rigidBody2D;
 	private SpriteRenderer spriteRenderer;
 	private CameraController cameraController;
@@ -90,14 +91,16 @@ public class PlayerController : MonoBehaviour {
 		if (playerNumber == Player.PLAYER_ONE) {
 			axisH = "P1_Horizontal";
 			axisV = "P1_Vertical";
-			magnetButton = "P1_Magnet";
+			magnetButton = "P1_MagnetButton";
+			magnetTrigger = "P2_MagnetTrigger";
 			spriteRenderer.color = colorPlayer1;
 
 		}
 		else {
 			axisH = "P2_Horizontal";
 			axisV = "P2_Vertical";
-			magnetButton = "P2_Magnet";
+			magnetButton = "P2_MagnetButton";
+			magnetTrigger = "P2_MagnetTrigger";
 			spriteRenderer.color = colorPlayer2;
 		}
 
@@ -199,8 +202,17 @@ public class PlayerController : MonoBehaviour {
 	private void MagnetMechanic() {
 		if (isCloseToOtherPlayer) {
 			if (Input.GetButton(magnetButton)) {
-				Debug.Log("Magnet held down");
-			
+				Debug.Log("Magnet button held down");
+				// Add small force toward other player
+				Vector2 targetPoint = otherPlayer.transform.position;
+				Vector2 currentPosition = transform.position;
+				Vector2 forceDirection = targetPoint - currentPosition;
+				rigidBody2D.AddForce(forceDirection * magnetStrength);
+			}
+
+
+			if (Input.GetAxis(magnetTrigger) == 1)  {
+				Debug.Log("Magnet trigger held down");
 				// Add small force toward other player
 				Vector2 targetPoint = otherPlayer.transform.position;
 				Vector2 currentPosition = transform.position;

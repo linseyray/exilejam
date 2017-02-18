@@ -406,7 +406,7 @@ InputManager:
     axis: 1
     joyNum: 0
   - serializedVersion: 3
-    m_Name: P1_Magnet
+    m_Name: P1_MagnetButton
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -422,7 +422,7 @@ InputManager:
     axis: 1
     joyNum: 0
   - serializedVersion: 3
-    m_Name: P2_Magnet
+    m_Name: P2_MagnetButton
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
@@ -436,4 +436,36 @@ InputManager:
     invert: 1
     type: 2
     axis: 1
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: P1_MagnetTrigger
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: left shift
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.2
+    sensitivity: 1
+    snap: 1
+    invert: 0
+    type: 2
+    axis: 2
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: P2_MagnetTrigger
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: left shift
+    altNegativeButton: 
+    altPositiveButton: 
+    gravity: 0
+    dead: 0.2
+    sensitivity: 1
+    snap: 1
+    invert: 1
+    type: 2
+    axis: 5
     joyNum: 0
