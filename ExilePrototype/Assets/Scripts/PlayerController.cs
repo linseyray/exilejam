@@ -129,6 +129,7 @@ public class PlayerController : MonoBehaviour {
 		RoomPresenceEffect();
 		UpdatePlayerVision();
 		UpdatePlayerMovement();
+		MagnetMechanic();
 		UpdateAura();
 	}
 
@@ -224,8 +225,6 @@ public class PlayerController : MonoBehaviour {
 
 	public void OnCloseToOtherPlayer() {
 		this.isCloseToOtherPlayer = true;
-
-		MagnetMechanic();
 
 		// Flash effect 
 		cameraController.FlashEffect();
