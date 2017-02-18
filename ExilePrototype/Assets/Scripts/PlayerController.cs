@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour {
 			axisH = "P1_Horizontal";
 			axisV = "P1_Vertical";
 			magnetButton = "P1_MagnetButton";
-			magnetTrigger = "P2_MagnetTrigger";
+			magnetTrigger = "P1_MagnetTrigger";
 			spriteRenderer.color = colorPlayer1;
 
 		}
