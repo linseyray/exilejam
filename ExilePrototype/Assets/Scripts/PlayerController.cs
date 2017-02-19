@@ -63,7 +63,8 @@ public class PlayerController : MonoBehaviour {
 	 			 							VISUALISATION VARIABLES
 	**********************************************************************************************************/
 	// Nearness Aura
-	[SerializeField] private float auraFadeRate = 5.0f;
+	[SerializeField] private float auraFadeRate = 2.5f;
+	[SerializeField] private float weakenAuraStrength = 5.0f;
 	private float maxAuraEmissionRate;
 	private ParticleSystem.EmissionModule emission;
 	private ParticleSystem.MinMaxCurve emissionRateOverTime;
@@ -202,8 +203,9 @@ public class PlayerController : MonoBehaviour {
 	private void UpdateAura() {
 		if (fadeInAura) {
 			emissionRateOverTime.constant += auraFadeRate;
-			if (emissionRateOverTime.constant >= maxAuraEmissionRate) {
-				emissionRateOverTime = maxAuraEmissionRate;
+			float maxRate = isCloseToOtherPlayer ? maxAuraEmissionRate : maxAuraEmissionRate / weakenAuraStrength;
+			if (emissionRateOverTime.constant >= maxRate) {
+				emissionRateOverTime = maxRate;
 				fadeInAura = false;
 			}
 		}
@@ -234,8 +236,10 @@ public class PlayerController : MonoBehaviour {
 				fadeInAura = true; // Activate aura
 				AddMagnetForce();
 			}
-			else
+			else {
+				fadeInAura = false;
 				fadeOutAura = true;
+			}
 
 			// Is the other seeking contact?
 			if (otherSeeksContact) {
@@ -261,9 +265,21 @@ public class PlayerController : MonoBehaviour {
 				// We're close but the other isn't seeking contact
 				ResetTolerance();
 		}
-		else 
+		else {
 			// We're out of range
 			ResetTolerance();
+			// But still allow for calling
+			float triggerAxis = MapAxisValue(Input.GetAxis(magnetTrigger));
+			bool seekingContact = triggerAxis >= 1 || Input.GetButton(magnetButton);
+			if (seekingContact) {
+				fadeInAura = true; // Activate aura
+				fadeOutAura = false;
+			}
+			else {
+				fadeInAura = false;
+				fadeOutAura = true;
+			}
+		}
 	}
 
 	private void ResetTolerance() {
@@ -310,6 +326,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void OnFarFromOtherPlayer() {
 		this.isCloseToOtherPlayer = false;
+		fadeInAura = false;
 		fadeOutAura = true;
 	}
 
