@@ -599,6 +599,11 @@ Prefab:
       propertyPath: ColorModule.gradient.maxGradient.ctime0
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: centralRoomVignetteIntensity
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
   m_IsPrefabParent: 0
@@ -1070,6 +1075,11 @@ Prefab:
         type: 2}
       propertyPath: ColorModule.gradient.maxGradient.key1.rgba
       value: 140627431
+      objectReference: {fileID: 0}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: centralRoomVignetteIntensity
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

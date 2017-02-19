@@ -415,10 +415,14 @@ public class PlayerController : MonoBehaviour {
 		otherPlayer.GetComponent<PlayerController>().touchedSinceEntry = false;
 		Debug.Log(playerNumber + " moved to room " + currentRoom.ToString());
 
-		// Recharge when entering a room 
 		if (currentRoom != PlayerLocation.CENTRAL_ROOM) {
+			// Recharge when entering a room 
 			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+			// Increased vignette effect when in another room
+			cameraController.EnableRoomVignette();
 		}
+		else
+			cameraController.DisableRoomVignette();
 	}
 }

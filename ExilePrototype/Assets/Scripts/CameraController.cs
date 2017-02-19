@@ -24,8 +24,12 @@ public class CameraController : MonoBehaviour {
 	private float flashEndVignetteIntensity;
 
 	private VignetteAndChromaticAberration vignetteFilter;
-	[SerializeField] float maxVignetteIntensity = 0.2f;
-	[SerializeField] float vignetteSpeed = 0.01f;
+	[SerializeField] float roomVignetteIntensity = 0.7f;
+	[SerializeField] float centralRoomVignetteIntensity = 0.2f;
+	float maxVignetteIntensity = 0.2f;
+	[SerializeField] float roomVignetteSpeed = 0.05f;
+	[SerializeField] float centralRoomVignetteSpeed = 0.01f;
+	private float vignetteSpeed;
 
 	private NoiseAndScratches noiseFilter;
 	[SerializeField] float maxNoiseGrainIntensity;
@@ -46,6 +50,8 @@ public class CameraController : MonoBehaviour {
 		noiseFilter = gameObject.GetComponent<NoiseAndScratches>();
 		blurFilter = gameObject.GetComponent<CameraMotionBlur>();
 		bloomFilter = gameObject.GetComponent<Bloom>();
+		maxVignetteIntensity = centralRoomVignetteIntensity;
+		vignetteSpeed = centralRoomVignetteSpeed;
 	}
 
 	void Start () {
@@ -169,5 +175,15 @@ public class CameraController : MonoBehaviour {
 
 	private void StopImplode() {
 		implodingFlash = false;
+	}
+
+	public void EnableRoomVignette() {
+		maxVignetteIntensity = roomVignetteIntensity;
+		vignetteSpeed = roomVignetteSpeed;
+	}
+
+	public void DisableRoomVignette() {
+		maxVignetteIntensity = centralRoomVignetteIntensity;
+		vignetteSpeed = centralRoomVignetteSpeed;
 	}
 }
