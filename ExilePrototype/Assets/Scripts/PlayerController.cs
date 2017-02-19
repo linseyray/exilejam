@@ -229,8 +229,6 @@ public class PlayerController : MonoBehaviour {
 			bool otherSeeksContact = triggerAxisOther >= 1 || Input.GetButton(magnetButtonOther);
 			bothSeekingContact = seekingContact && otherSeeksContact;
 
-			Debug.Log(triggerAxisOther);
-
 			// Are we seeking contact?
 			if (seekingContact)  {
 				fadeInAura = true; // Activate aura
