@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour {
 	private string axisH;
 	private string axisV;
 	private string magnetButton;
+	private string magnetButtonOther;
 	private string magnetTrigger;
 	private string magnetTriggerOther;
 	private Rigidbody2D rigidBody2D;
@@ -83,6 +84,11 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private float reuniteEffectLingerTime;
 
 	/*********************************************************************************************************
+	 			 								EXPERIENCE VARIABLES
+	**********************************************************************************************************/
+	private TrailController trailController;
+
+	/*********************************************************************************************************
 	 			 								INITIALISATION
 	**********************************************************************************************************/
 
@@ -100,6 +106,7 @@ public class PlayerController : MonoBehaviour {
 			axisH = "P1_Horizontal";
 			axisV = "P1_Vertical";
 			magnetButton = "P1_MagnetButton";
+			magnetButtonOther = "P2_MagnetButton";
 			magnetTrigger = "P1_MagnetTrigger";
 			magnetTriggerOther = "P2_MagnetTrigger";
 			spriteRenderer.color = colorPlayer1;
@@ -109,6 +116,7 @@ public class PlayerController : MonoBehaviour {
 			axisH = "P2_Horizontal";
 			axisV = "P2_Vertical";
 			magnetButton = "P2_MagnetButton";
+			magnetButtonOther = "P1_MagnetButton";
 			magnetTrigger = "P2_MagnetTrigger";
 			magnetTriggerOther = "P1_MagnetTrigger";
 			spriteRenderer.color = colorPlayer2;
@@ -128,6 +136,8 @@ public class PlayerController : MonoBehaviour {
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		cameraController.InitialiseVariables(balanceMaxBound);
 		currentSpeed = neutralSpeed;
+
+		trailController = GetComponentInChildren<TrailController>();
 	}
 
 	/*********************************************************************************************************
@@ -213,41 +223,53 @@ public class PlayerController : MonoBehaviour {
 
 		if (isCloseToOtherPlayer) {
 			float triggerAxis = MapAxisValue(Input.GetAxis(magnetTrigger));
-			if (triggerAxis >= 1)  {
-				Debug.Log("Magnet trigger held down");
-				fadeInAura = true; // Activates aura
+			float triggerAxisOther = MapAxisValue(Input.GetAxis(magnetTriggerOther));
+			bool seekingContact = triggerAxis >= 1 || Input.GetButton(magnetButton);
+			bool otherSeeksContact = triggerAxisOther >= 1 || Input.GetButton(magnetButtonOther);
+
+			Debug.Log(triggerAxisOther);
+
+			// Are we seeking contact?
+			if (seekingContact)  {
+				fadeInAura = true; // Activate aura
 				AddMagnetForce();
 			}
 			else
 				fadeOutAura = true;
 
-			if (MapAxisValue(Input.GetAxis(magnetTrigger)) >= 1 && 
-				MapAxisValue(Input.GetAxis(magnetTriggerOther)) >= 1) {
-				// Double the magnet force, because both want to seek contact
-				AddMagnetForce();
-				spriteShakeController.enabled = false;
-				breakingTolerance = false;
-			}
-			else
-			if (MapAxisValue(Input.GetAxis(magnetTrigger)) < 1 &&
-				MapAxisValue(Input.GetAxis(magnetTriggerOther)) >= 1) {
+			// Is the other seeking contact?
+			if (otherSeeksContact) {
+				if (seekingContact) {
+					// Both want to seek contact, double the magnet force
+					AddMagnetForce();
+					ResetTolerance();	
+				}
+				else {
+					// The other is seeking contact, but we're not 
 					if (!breakingTolerance) {
+						// Start the countdown until shake
 						breakingTolerance = true;
 						timeTillMagnetToleranceBreak = magnetToleranceTime;
 					}
 					timeTillMagnetToleranceBreak -= Time.deltaTime;
 					if (timeTillMagnetToleranceBreak <= 0.0f)
+						// Shake
 						spriteShakeController.enabled = true;
+				}
 			}
-			else {
-				spriteShakeController.enabled = false;
-				breakingTolerance = false;
-			}
+			else
+				// We're close but the other isn't seeking contact
+				ResetTolerance();
 		}
-		else {
-			breakingTolerance = false;
-			spriteShakeController.enabled = false;
-		}
+		else 
+			// We're out of range
+			ResetTolerance();
+	}
+
+	private void ResetTolerance() {
+		// Stop shaking and stop countdown to shake
+		spriteShakeController.enabled = false;
+		breakingTolerance = false;
 	}
 
 	private void AddMagnetForce() {
@@ -323,11 +345,13 @@ public class PlayerController : MonoBehaviour {
 		if (collider.tag == "PositiveExperience") {
 			GainPositiveExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
+			trailController.GrowTrail();
 		}
 		else
 		if (collider.tag == "NegativeExperience") {
 			GainNegativeExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
+			trailController.GrowTrail();
 		}
 		
 		if (collider.name == "Room1") {
