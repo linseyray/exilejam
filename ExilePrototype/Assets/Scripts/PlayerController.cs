@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
 															// seeking contact (activating magnet)
 	private float timeTillMagnetToleranceBreak = 0.0f;		
 	private bool breakingTolerance = false;
+	private bool bothSeekingContact = false;
 
 	private float roomPresenceImpact = 0.05f;		// the speed at which balance changes based on room presence
 	private float otherPlayerImpact = 10f;			// the amount with which the other player influences the balance
@@ -192,10 +193,10 @@ public class PlayerController : MonoBehaviour {
 			if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR && currentSpeed < 0.0f)
 				currentSpeed += 0.1f;
 		}
-		if (balance > 0.0f)
+		if (balance > 0.0f && bothSeekingContact)
+			currentSpeed = maxSpeed;
+		else
 			currentSpeed = neutralSpeed;
-				
-		// sprite shake?
 	}
 
 	private void UpdateAura() {
@@ -226,6 +227,7 @@ public class PlayerController : MonoBehaviour {
 			float triggerAxisOther = MapAxisValue(Input.GetAxis(magnetTriggerOther));
 			bool seekingContact = triggerAxis >= 1 || Input.GetButton(magnetButton);
 			bool otherSeeksContact = triggerAxisOther >= 1 || Input.GetButton(magnetButtonOther);
+			bothSeekingContact = seekingContact && otherSeeksContact;
 
 			Debug.Log(triggerAxisOther);
 
@@ -243,7 +245,6 @@ public class PlayerController : MonoBehaviour {
 					// Both want to seek contact 
 					AddMagnetForce(); // double the magnet force
 					ResetTolerance();	
-
 				}
 				else {
 					// The other is seeking contact, but we're not 
