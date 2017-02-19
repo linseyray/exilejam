@@ -240,9 +240,10 @@ public class PlayerController : MonoBehaviour {
 			// Is the other seeking contact?
 			if (otherSeeksContact) {
 				if (seekingContact) {
-					// Both want to seek contact, double the magnet force
-					AddMagnetForce();
+					// Both want to seek contact 
+					AddMagnetForce(); // double the magnet force
 					ResetTolerance();	
+
 				}
 				else {
 					// The other is seeking contact, but we're not 
