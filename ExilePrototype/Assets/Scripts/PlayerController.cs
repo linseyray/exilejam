@@ -409,10 +409,11 @@ public class PlayerController : MonoBehaviour {
 	private void MoveToRoom(PlayerLocation newRoom) {
 		if (newRoom == currentRoom)
 			return;
+		PlayerController otherPlayerController = otherPlayer.GetComponent<PlayerController>();
 		
 		currentRoom = newRoom;
 		touchedSinceEntry = false;
-		otherPlayer.GetComponent<PlayerController>().touchedSinceEntry = false;
+		otherPlayerController.touchedSinceEntry = false;
 		Debug.Log(playerNumber + " moved to room " + currentRoom.ToString());
 
 		if (currentRoom != PlayerLocation.CENTRAL_ROOM) {
@@ -420,9 +421,21 @@ public class PlayerController : MonoBehaviour {
 			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
 			// Increased vignette effect when in another room
-			cameraController.EnableRoomVignette();
+			EnableDarkVignette();
+			otherPlayerController.EnableDarkVignette();
 		}
-		else
-			cameraController.DisableRoomVignette();
+		else 
+		if (otherPlayerController.GetLocation() == PlayerLocation.CENTRAL_ROOM) {
+			DisableAloneVignette();
+			otherPlayerController.DisableAloneVignette();
+		}
+	}
+
+	public void EnableDarkVignette() {
+		cameraController.EnableDarkVignette();
+	}
+
+	public void DisableAloneVignette() {
+		cameraController.DisableDarkVignette();
 	}
 }

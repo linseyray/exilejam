@@ -23,12 +23,16 @@ public class CameraController : MonoBehaviour {
 	private float flashEndBloomIntensity;
 	private float flashEndVignetteIntensity;
 
+	// Dark vignette
+	private bool disablingDarkVignette = false;
+	private float disableSpeed = 0.05f;
+
 	private VignetteAndChromaticAberration vignetteFilter;
-	[SerializeField] float roomVignetteIntensity = 0.7f;
-	[SerializeField] float centralRoomVignetteIntensity = 0.2f;
+	[SerializeField] float darkVignetteIntensity = 0.7f;
+	[SerializeField] float lightVignetteIntensity = 0.2f;
 	float maxVignetteIntensity = 0.2f;
-	[SerializeField] float roomVignetteSpeed = 0.05f;
-	[SerializeField] float centralRoomVignetteSpeed = 0.01f;
+	[SerializeField] float darkVignetteSpeed = 0.05f;
+	[SerializeField] float lightVignetteSpeed = 0.01f;
 	private float vignetteSpeed;
 
 	private NoiseAndScratches noiseFilter;
@@ -50,12 +54,11 @@ public class CameraController : MonoBehaviour {
 		noiseFilter = gameObject.GetComponent<NoiseAndScratches>();
 		blurFilter = gameObject.GetComponent<CameraMotionBlur>();
 		bloomFilter = gameObject.GetComponent<Bloom>();
-		maxVignetteIntensity = centralRoomVignetteIntensity;
-		vignetteSpeed = centralRoomVignetteSpeed;
+		maxVignetteIntensity = lightVignetteIntensity;
+		vignetteSpeed = lightVignetteSpeed;
 	}
 
 	void Start () {
-		
 	}
 
 	public void InitialiseVariables(float maxBounds) {
@@ -84,7 +87,10 @@ public class CameraController : MonoBehaviour {
 			noiseFilter.grainIntensityMin = noiseFilter.grainIntensityMax;
 			bloomFilter.bloomIntensity = Mathf.SmoothDamp(bloomFilter.bloomIntensity, flashEndBloomIntensity, ref bloomVelocity, implodingFlashTime);
 			vignetteFilter.intensity = Mathf.SmoothDamp(vignetteFilter.intensity, flashEndVignetteIntensity, ref vignetteVelocity, implodingFlashTime);
+		}
 
+		if (disablingDarkVignette) {
+			UpdatePlayerVision(PlayerController.BalanceDirection.RECHARGE_FACTOR, disableSpeed);
 		}
 	}
 
@@ -109,9 +115,16 @@ public class CameraController : MonoBehaviour {
 	}
 
 	private void Recharge(float changeAmount) {
+
+
 		// Decrease vignette
 		if (vignetteFilter.intensity >= 0.0f) 
 			vignetteFilter.intensity -= changeAmount * vignetteSpeed;
+		if (disablingDarkVignette && vignetteFilter.intensity <= maxVignetteIntensity) {
+			disablingDarkVignette = false;
+			vignetteSpeed = lightVignetteSpeed;
+		}
+			
 
 		// Decrease noise
 		if (noiseFilter.grainIntensityMax >= 0.0f) {
@@ -129,6 +142,9 @@ public class CameraController : MonoBehaviour {
 	}
 
 	private void Drain(float changeAmount) {
+		if (disablingDarkVignette)
+			return;
+
 		// Increase vignette
 		if (vignetteFilter.intensity <= maxVignetteIntensity) 
 			vignetteFilter.intensity += changeAmount * vignetteSpeed;
@@ -177,13 +193,14 @@ public class CameraController : MonoBehaviour {
 		implodingFlash = false;
 	}
 
-	public void EnableRoomVignette() {
-		maxVignetteIntensity = roomVignetteIntensity;
-		vignetteSpeed = roomVignetteSpeed;
+	public void EnableDarkVignette() {
+		maxVignetteIntensity = darkVignetteIntensity;
+		vignetteSpeed = darkVignetteSpeed;
+		disablingDarkVignette = false;
 	}
 
-	public void DisableRoomVignette() {
-		maxVignetteIntensity = centralRoomVignetteIntensity;
-		vignetteSpeed = centralRoomVignetteSpeed;
+	public void DisableDarkVignette() {
+		maxVignetteIntensity = lightVignetteIntensity;
+		disablingDarkVignette = true;
 	}
 }
