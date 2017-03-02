@@ -60,9 +60,6 @@ public class CameraController : MonoBehaviour {
 
 	void Start () {
 	}
-
-	public void InitialiseVariables(float maxBounds) {
-	}
 	
 	void Update () {
 		if (addingImpulse) {

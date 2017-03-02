@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour {
 
 		// Setup emotional balance
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
-		cameraController.InitialiseVariables(balanceMaxBound);
+		timeUntilBalanceShift = BALANCE_SHIFT_TIME;
 		currentSpeed = neutralSpeed;
 
 		trailController = GetComponentInChildren<TrailController>();
@@ -174,8 +174,10 @@ public class PlayerController : MonoBehaviour {
 		// Balance shift after some time in room
 		if (timeUntilBalanceShift >= 0.0f) {
 			timeUntilBalanceShift -= Time.deltaTime;
-			if (timeUntilBalanceShift <= 0.0f) 
+			if (timeUntilBalanceShift <= 0.0f)  {
 				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
+				//Debug.Log("Shifted balance");
+			}
 		}
 	}
 
@@ -414,7 +416,7 @@ public class PlayerController : MonoBehaviour {
 		currentRoom = newRoom;
 		touchedSinceEntry = false;
 		otherPlayerController.touchedSinceEntry = false;
-		Debug.Log(playerNumber + " moved to room " + currentRoom.ToString());
+		//Debug.Log(playerNumber + " moved to room " + currentRoom.ToString());
 
 		if (currentRoom != PlayerLocation.CENTRAL_ROOM) {
 			// Recharge when entering a room 
