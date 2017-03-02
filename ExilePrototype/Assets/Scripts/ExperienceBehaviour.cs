@@ -11,13 +11,16 @@ public class ExperienceBehaviour : MonoBehaviour {
 	private float fadeVelocity = 0.0f;
 	private float fadeTime = 0.3f;
 
+	private int identifier; 	// The spawn point this experience was spawned at
+
 
 	void Awake() {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 	}
 		
-	public void SetSpawner(ExperienceSpawner spawner) {
+	public void SetSpawner(ExperienceSpawner spawner, int identifier) {
 		this.spawner = spawner;
+		this.identifier = identifier;
 	}
 
 	void Start () {
@@ -30,8 +33,8 @@ public class ExperienceBehaviour : MonoBehaviour {
 			newColor.a = Mathf.SmoothDamp(newColor.a, 0.0f, ref fadeVelocity, fadeTime);
 			spriteRenderer.color = newColor;
 			if (newColor.a <= 0.3f) {
+				spawner.ExperienceCollected(identifier);
 				Destroy(gameObject);
-				spawner.ExperienceCollected();
 			}
 		}
 	}
