@@ -89,6 +89,7 @@ public class PlayerController : MonoBehaviour {
 	 			 								EXPERIENCE VARIABLES
 	**********************************************************************************************************/
 	private TrailController trailController;
+	[SerializeField] private AudioSource experienceCollectAudioSource;
 
 	/*********************************************************************************************************
 	 			 								INITIALISATION
@@ -364,13 +365,11 @@ public class PlayerController : MonoBehaviour {
 		if (collider.tag == "PositiveExperience") {
 			GainPositiveExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
-			trailController.GrowTrail();
 		}
 		else
 		if (collider.tag == "NegativeExperience") {
 			GainNegativeExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
-			trailController.GrowTrail();
 		}
 		
 		if (collider.name == "Room1") {
@@ -399,12 +398,18 @@ public class PlayerController : MonoBehaviour {
 		balance += experienceImpact;
 		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+		//if (!experienceCollectAudioSource.isPlaying)
+		//experienceCollectAudioSource.Play();
+		trailController.GrowTrail();
 	}
 
 	private void GainNegativeExperience() {
 		balance -= experienceImpact;
 		cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, experienceImpact);
 		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
+		//if (!experienceCollectAudioSource.isPlaying)
+		//experienceCollectAudioSource.Play();
+		trailController.GrowTrail();
 	}
 
 

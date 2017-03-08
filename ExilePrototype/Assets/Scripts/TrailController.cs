@@ -48,5 +48,6 @@ public class TrailController : MonoBehaviour {
 	public void FadeOutTrail() {
 		fadingOut = true;
 		trailTimeBeforeFade = trailRenderer.time;
+		trailLength = 0;
 	}
 }

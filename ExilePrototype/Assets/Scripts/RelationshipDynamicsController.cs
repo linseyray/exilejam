@@ -7,8 +7,6 @@ public class RelationshipDynamicsController : MonoBehaviour {
 	[SerializeField] private GameObject player1;
 	[SerializeField] private GameObject player2;
 
-	[SerializeField] private AudioClip onCloseAudioClip;
-
 	[SerializeField] private SpriteRenderer pathBlockerRenderer;
 	[SerializeField] private Collider2D pathBlockerCollider;		// The actual collider that blocks players from passing
 	[SerializeField] private Collider2D pathBlockerDetectionArea;	// Trigger: used to detect nearness of players
@@ -17,8 +15,8 @@ public class RelationshipDynamicsController : MonoBehaviour {
 	private bool hidingPath = false;		// Whether we are decreasing path visibility
 	private bool showingPath = false;		// Whether we are increasing path visibility
 
-
-	private AudioSource onCloseAudioSource;
+	[SerializeField] private AudioSource onCloseAudioSource;
+	[SerializeField] private AudioSource onExperienceShareAudioSource;
 	private PlayerController player1Controller;
 	private PlayerController player2Controller;
 	private BoxCollider2D player1Collider;
@@ -36,7 +34,6 @@ public class RelationshipDynamicsController : MonoBehaviour {
 		player2AreaCollider = player2.GetComponentInChildren<CircleCollider2D>();
 		player1Controller = player1.GetComponent<PlayerController>();
 		player2Controller = player2.GetComponent<PlayerController>();
-		onCloseAudioSource = GetComponent<AudioSource>();
 	}
 
 	void Start () {
@@ -49,7 +46,8 @@ public class RelationshipDynamicsController : MonoBehaviour {
 		if (!player1Controller.IsCloseToOtherPlayer() && player2Collider.IsTouching(player1AreaCollider)) {
 			player1Controller.OnCloseToOtherPlayer();
 			player2Controller.OnCloseToOtherPlayer();
-			onCloseAudioSource.PlayOneShot(onCloseAudioClip);
+			//onCloseAudioSource.PlayOneShot(onCloseAudioSource.clip);
+			onCloseAudioSource.Play();
 			ShareExperiences();
 		}
 
@@ -133,10 +131,10 @@ public class RelationshipDynamicsController : MonoBehaviour {
 	}
 
 	private void ShareExperiences() {
-		if (trailControllerP1.TrailLength() > 0)
+		if (trailControllerP1.TrailLength() > 0 || trailControllerP2.TrailLength() > 0) {
 			trailControllerP1.FadeOutTrail();
-
-		if (trailControllerP2.TrailLength() > 0)
 			trailControllerP2.FadeOutTrail();
+			onExperienceShareAudioSource.Play();
+		}
 	}
 }

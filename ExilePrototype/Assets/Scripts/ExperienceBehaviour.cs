@@ -15,7 +15,7 @@ public class ExperienceBehaviour : MonoBehaviour {
 
 
 	void Awake() {
-		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 		
 	public void SetSpawner(ExperienceSpawner spawner, int identifier) {
