@@ -35,11 +35,9 @@ public class ExperienceSpawner : MonoBehaviour {
 	}
 
 	private void Spawn(int identifier) {
-		Debug.Log("finding point" + identifier);
 		for (int i = 0; i < spawnPoints.Length; i++) {
 			SpawnPoint spawnPoint = spawnPoints[i];
 			if (spawnPoint.identifier == identifier) {
-				Debug.Log("point found, spawning...");
 				// Spawn new experience
 				GameObject experience = GameObject.Instantiate(experiencePrefab);
 				experience.transform.parent = transform;
@@ -56,12 +54,9 @@ public class ExperienceSpawner : MonoBehaviour {
 
 	public IEnumerator SpawnDelay(int identifier)
 	{
-		Debug.Log("experience collected at point" + identifier);
 		yield return new WaitForSeconds(spawnDelay);
-		Debug.Log("returned after yield");
 		// Function resumes after spawnDelay
 		spawnDelay += delayIncreaseFactor;
-		Debug.Log("spawnDelay = " + spawnDelay);
 		Spawn(identifier);
 	}
 

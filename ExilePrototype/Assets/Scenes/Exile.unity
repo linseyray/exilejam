@@ -91,6 +91,12 @@ NavMeshSettings:
     cellSize: 0.16666667
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &47116943 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114640106988896194, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1439295382}
+  m_Script: {fileID: 11500000, guid: 0c7a92d6abee16740a1e222899bb8601, type: 3}
 --- !u!1 &277698618
 GameObject:
   m_ObjectHideFlags: 0
@@ -153,7 +159,10 @@ MonoBehaviour:
   player2: {fileID: 1339123542}
   onCloseAudioClip: {fileID: 8300000, guid: e951594bffdac4541851c0b1aafc12e2, type: 3}
   pathBlockerRenderer: {fileID: 1753991975}
-  pathBlockerCollider: {fileID: 1753991977}
+  pathBlockerCollider: {fileID: 510351976}
+  pathBlockerDetectionArea: {fileID: 1419442302}
+  trailControllerP1: {fileID: 47116943}
+  trailControllerP2: {fileID: 1315826029}
 --- !u!4 &330354738
 Transform:
   m_ObjectHideFlags: 0
@@ -305,6 +314,49 @@ Transform:
   m_Father: {fileID: 1488621865}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &510351974
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 510351975}
+  - component: {fileID: 510351976}
+  m_Layer: 0
+  m_Name: PathCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &510351975
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 510351974}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.07692307, y: 0.07692307, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1753991976}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &510351976
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 510351974}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 12.97, y: 15.24}
 --- !u!1 &802705138
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,6 +745,11 @@ Prefab:
       propertyPath: centralRoomVignetteIntensity
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 114640106988896194, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: fadeOutTime
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
   m_IsPrefabParent: 0
@@ -749,7 +806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &1191842487
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1027,11 +1084,60 @@ AudioListener:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1191842485}
   m_Enabled: 1
+--- !u!114 &1315826029 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114640106988896194, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1084453906}
+  m_Script: {fileID: 11500000, guid: 0c7a92d6abee16740a1e222899bb8601, type: 3}
 --- !u!1 &1339123542 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1224789267525580, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
     type: 2}
   m_PrefabInternal: {fileID: 1084453906}
+--- !u!1 &1419442301
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1419442303}
+  - component: {fileID: 1419442302}
+  m_Layer: 0
+  m_Name: PathDetectionArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!58 &1419442302
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1419442301}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 10.61
+--- !u!4 &1419442303
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1419442301}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.07692307, y: 0.07692307, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1753991976}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1439295382
 Prefab:
   m_ObjectHideFlags: 0
@@ -1198,6 +1304,16 @@ Prefab:
       propertyPath: centralRoomVignetteIntensity
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 114640106988896194, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: fadeOutTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 96789619689956516, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: m_Parameters.widthMultiplier
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
@@ -1279,7 +1395,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1753991976}
   - component: {fileID: 1753991975}
-  - component: {fileID: 1753991977}
   m_Layer: 10
   m_Name: PathBlocker
   m_TagString: Untagged
@@ -1331,24 +1446,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 25.76, y: -17.7, z: 2.6}
   m_LocalScale: {x: 13, y: 13, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1419442303}
+  - {fileID: 510351975}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1753991977
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1753991974}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.9999999}
 --- !u!1001 &1755004415
 Prefab:
   m_ObjectHideFlags: 0
