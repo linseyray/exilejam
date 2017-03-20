@@ -192,15 +192,21 @@ public class PlayerController : MonoBehaviour {
 
 	private void UpdatePlayerMovement() {
 		if (balance < 0.0f) {
-			if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR && currentSpeed > minSpeed)
+			if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR && currentSpeed > minSpeed) 
 				currentSpeed -= 0.1f;
+			else
 			if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR && currentSpeed < 0.0f)
 				currentSpeed += 0.1f;
 		}
-		if (balance > 0.0f && bothSeekingContact)
-			currentSpeed = maxSpeed;
 		else
-			currentSpeed = neutralSpeed;
+		if (balance > 0.0f) {
+			if (bothSeekingContact)
+				currentSpeed = maxSpeed;
+			else
+				currentSpeed = neutralSpeed;
+		}
+
+		Debug.Log("currentSpeed:" + currentSpeed);
 	}
 
 	private void UpdateAura() {
