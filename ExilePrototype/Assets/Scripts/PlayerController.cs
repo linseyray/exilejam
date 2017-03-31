@@ -56,8 +56,9 @@ public class PlayerController : MonoBehaviour {
 	**********************************************************************************************************/
 	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2, ROOM3, UNDECIDED };
 	private PlayerLocation currentRoom = PlayerLocation.UNDECIDED;
-	[SerializeField] float BALANCE_SHIFT_TIME;
-	private float timeUntilBalanceShift;
+	[SerializeField] float BALANCE_SHIFT_TIME;		// After this time balance is shifted from draining to recharing or vice versa
+	private float timeUntilBalanceShift;			// Countdown from BALANCE_SHIFT_TIME
+													// Reset by 1) reaching 0.0, 2) reunite effect, 3) moving to room
 
 	/*********************************************************************************************************
 	 			 							VISUALISATION VARIABLES
@@ -149,7 +150,7 @@ public class PlayerController : MonoBehaviour {
 	
 	void Update() {
 		Move();
-		RoomPresenceEffect();
+		UpdateBalance();
 		UpdatePlayerVision();
 		UpdatePlayerMovement();
 		MagnetMechanic();
@@ -163,23 +164,27 @@ public class PlayerController : MonoBehaviour {
 		rigidBody2D.AddForce(inputDirection * currentSpeed);
 	}
 
-	private void RoomPresenceEffect() {
-		//if (reuniting)
-		//	return;
+	// Called each frame, ensures balance gets shifted after BALANCE_SHIFT_TIME 
+	private void UpdateBalance() {
+		AddToBalance(((int) currentBalanceDirection) * roomPresenceImpact);
 
-		// Update balance
-		balance += ((int) currentBalanceDirection) * roomPresenceImpact;
+		// Balance shift after some time
+		if (timeUntilBalanceShift > 0.0f)
+			timeUntilBalanceShift -= Time.deltaTime;
+		if (timeUntilBalanceShift <= 0.0f)  {
+			if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR)
+				currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+			else
+				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
+			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+			Debug.Log("Balance Shifted");
+		}
+	}
+		
+	private void AddToBalance(float amount) {
+		balance += amount;
 		balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
 		//Debug.Log(playerNumber + " balance: " + balance);
-
-		// Balance shift after some time in room
-		if (timeUntilBalanceShift >= 0.0f) {
-			timeUntilBalanceShift -= Time.deltaTime;
-			if (timeUntilBalanceShift <= 0.0f)  {
-				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
-				//Debug.Log("Shifted balance");
-			}
-		}
 	}
 
 	private void UpdatePlayerVision() {
@@ -205,8 +210,6 @@ public class PlayerController : MonoBehaviour {
 			else
 				currentSpeed = neutralSpeed;
 		}
-
-		Debug.Log("currentSpeed:" + currentSpeed);
 	}
 
 	private void UpdateAura() {
@@ -324,8 +327,7 @@ public class PlayerController : MonoBehaviour {
 			touchedSinceEntry = true;
 			//Debug.Log(playerNumber + " reunites");
 			cameraController.AddPlayerVisionImpulse(otherPlayerImpact);
-			balance += otherPlayerImpact;
-			balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+			AddToBalance(otherPlayerImpact);
 			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
 			reuniting = true;
@@ -401,7 +403,7 @@ public class PlayerController : MonoBehaviour {
 
 
 	private void GainPositiveExperience() {
-		balance += experienceImpact;
+		AddToBalance(experienceImpact);
 		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		//if (!experienceCollectAudioSource.isPlaying)
@@ -410,11 +412,11 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void GainNegativeExperience() {
-		balance -= experienceImpact;
+		AddToBalance(-experienceImpact);
 		cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, experienceImpact);
 		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
 		//if (!experienceCollectAudioSource.isPlaying)
-		//experienceCollectAudioSource.Play();
+			//experienceCollectAudioSource.Play();
 		trailController.GrowTrail();
 	}
 
@@ -433,13 +435,12 @@ public class PlayerController : MonoBehaviour {
 			// Recharge when entering a room 
 			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
-			// Increased vignette effect when in another room
-			EnableDarkVignette();
+			EnableDarkVignette();	// Increased vignette effect when in another room
 			otherPlayerController.EnableDarkVignette();
 		}
 		else 
 		if (otherPlayerController.GetLocation() == PlayerLocation.CENTRAL_ROOM) {
-			DisableAloneVignette();
+			DisableAloneVignette(); // Don't use increased vignette effect in central room
 			otherPlayerController.DisableAloneVignette();
 		}
 	}
