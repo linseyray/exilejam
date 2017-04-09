@@ -841,7 +841,7 @@ Prefab:
         type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 6b094612264c2487daed997341a629ae,
+      objectReference: {fileID: 21300000, guid: cd49de148a6154b7cbab5569bff4b10f,
         type: 3}
     - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
         type: 2}
@@ -1491,15 +1491,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4895481082539318, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4386439912119378, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4086428332909464, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
         type: 2}
@@ -1508,11 +1508,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4481426967688736, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4465186448191262, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
         type: 2}
@@ -1577,7 +1577,7 @@ Prefab:
         type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 6b094612264c2487daed997341a629ae,
+      objectReference: {fileID: 21300000, guid: cd49de148a6154b7cbab5569bff4b10f,
         type: 3}
     - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
         type: 2}

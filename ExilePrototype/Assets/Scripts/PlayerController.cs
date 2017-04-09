@@ -19,10 +19,6 @@ public class PlayerController : MonoBehaviour {
 	private string magnetButtonOther;
 	private string magnetTrigger;
 	private string magnetTriggerOther;
-	private Rigidbody2D rigidBody2D;
-	private SpriteRenderer spriteRenderer;
-	private SpriteShake spriteShakeController;
-	private CameraController cameraController;
 
 
 	/*********************************************************************************************************
@@ -65,7 +61,7 @@ public class PlayerController : MonoBehaviour {
 	[Header("Aura")]
 	// Nearness Aura
 	[SerializeField] private float auraFadeRate = 2.5f;
-	[SerializeField] private float weakenAuraStrength = 5.0f;
+	[SerializeField] private float weakenAuraStrength = 10.0f;
 	private float maxAuraEmissionRate;
 	private ParticleSystem.EmissionModule emission;
 	private ParticleSystem.MinMaxCurve emissionRateOverTime;
@@ -101,6 +97,10 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private SoundController soundController;
 	[SerializeField] private RelationshipDynamicsController relationshipDynamicsController;
 	[SerializeField] private AudioSource experienceCollectAudioSource;
+	private Rigidbody2D rigidBody2D;
+	private SpriteRenderer spriteRenderer;
+	private SpriteController spriteController;
+	private CameraController cameraController;
 
 
 	/*********************************************************************************************************
@@ -109,10 +109,9 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake() {
 		rigidBody2D = GetComponent<Rigidbody2D>();
-		spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-		spriteShakeController = spriteRenderer.gameObject.GetComponent<SpriteShake>();
-		spriteShakeController.enabled = false;
+		spriteController = GetComponent<SpriteController>();
 		cameraController = GetComponentInChildren<CameraController>();
+		trailController = GetComponentInChildren<TrailController>();
 	}
 
 	void Start () {
@@ -124,8 +123,7 @@ public class PlayerController : MonoBehaviour {
 			magnetButtonOther = "P2_MagnetButton";
 			magnetTrigger = "P1_MagnetTrigger";
 			magnetTriggerOther = "P2_MagnetTrigger";
-			spriteRenderer.color = colorPlayer1;
-
+			spriteController.SetColor(colorPlayer1);
 		}
 		else {
 			axisH = "P2_Horizontal";
@@ -134,7 +132,7 @@ public class PlayerController : MonoBehaviour {
 			magnetButtonOther = "P1_MagnetButton";
 			magnetTrigger = "P2_MagnetTrigger";
 			magnetTriggerOther = "P1_MagnetTrigger";
-			spriteRenderer.color = colorPlayer2;
+			spriteController.SetColor(colorPlayer2);
 		}
 
 		// Set visualisation variables
@@ -151,8 +149,7 @@ public class PlayerController : MonoBehaviour {
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		timeUntilBalanceShift = BALANCE_SHIFT_TIME;
 		currentSpeed = neutralSpeed;
-
-		trailController = GetComponentInChildren<TrailController>();
+		spriteController.SetBounds(balanceMaxBound);
 	}
 
 	/*********************************************************************************************************
@@ -195,6 +192,7 @@ public class PlayerController : MonoBehaviour {
 	private void AddToBalance(float amount) {
 		balance += amount;
 		balance = Mathf.Clamp(balance, -balanceMaxBound, balanceMaxBound);
+		spriteController.UpdateSprite(balance);
 		//Debug.Log(playerNumber + " balance: " + balance);
 	}
 
@@ -281,7 +279,7 @@ public class PlayerController : MonoBehaviour {
 					timeTillMagnetToleranceBreak -= Time.deltaTime;
 					if (timeTillMagnetToleranceBreak <= 0.0f)
 						// Shake
-						spriteShakeController.enabled = true;
+						spriteController.EnableSpriteShake();
 				}
 			}
 			else
@@ -307,7 +305,7 @@ public class PlayerController : MonoBehaviour {
 
 	private void ResetTolerance() {
 		// Stop shaking and stop countdown to shake
-		spriteShakeController.enabled = false;
+		spriteController.DisableSpriteShake();
 		breakingTolerance = false;
 	}
 
