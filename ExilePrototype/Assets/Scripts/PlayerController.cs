@@ -7,14 +7,10 @@ public class PlayerController : MonoBehaviour {
 	/*********************************************************************************************************
 	 			 							GENERAL VARIABLES
 	**********************************************************************************************************/
+	[Header("Player Attributes")]
 	[SerializeField] private Player playerNumber;
 	[SerializeField] private Color colorPlayer1;
 	[SerializeField] private Color colorPlayer2;
-	[SerializeField] private GameObject otherPlayer;
-	[SerializeField] private ParticleSystem aura;
-	[SerializeField] private SoundController soundController;
-	[SerializeField] private RelationshipDynamicsController relationshipDynamicsController;
-
 
 	private enum Player { PLAYER_ONE, PLAYER_TWO };
 	private string axisH;
@@ -37,10 +33,11 @@ public class PlayerController : MonoBehaviour {
 	public enum BalanceDirection { DRAINING_FACTOR = -1, RECHARGE_FACTOR = +1 };
 	public BalanceDirection currentBalanceDirection;
 
-	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
+	[Header("Magnet")]
 	[SerializeField] private float magnetStrength;
 	[SerializeField] private float magnetToleranceTime; 	// Time until one player starts shaking when other keeps 
-															// seeking contact (activating magnet)
+	// seeking contact (activating magnet)
+	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
 	private float timeTillMagnetToleranceBreak = 0.0f;		
 	private bool breakingTolerance = false;
 	private bool bothSeekingContact = false;
@@ -56,6 +53,8 @@ public class PlayerController : MonoBehaviour {
 	**********************************************************************************************************/
 	public enum PlayerLocation { CENTRAL_ROOM, ROOM1, ROOM2, ROOM3, UNDECIDED };
 	private PlayerLocation currentRoom = PlayerLocation.UNDECIDED;
+
+	[Header("Balance Shifting")]
 	[SerializeField] float BALANCE_SHIFT_TIME;		// After this time balance is shifted from draining to recharing or vice versa
 	private float timeUntilBalanceShift;			// Countdown from BALANCE_SHIFT_TIME
 													// Reset by 1) reaching 0.0, 2) reunite effect, 3) moving to room
@@ -63,6 +62,7 @@ public class PlayerController : MonoBehaviour {
 	/*********************************************************************************************************
 	 			 							VISUALISATION VARIABLES
 	**********************************************************************************************************/
+	[Header("Aura")]
 	// Nearness Aura
 	[SerializeField] private float auraFadeRate = 2.5f;
 	[SerializeField] private float weakenAuraStrength = 5.0f;
@@ -72,25 +72,36 @@ public class PlayerController : MonoBehaviour {
 	private bool fadeInAura = false;
 	private bool fadeOutAura = false;
 
-	// Movement speed
-	private float currentSpeed;
+	[Header("Movement Speed")]
 	[SerializeField] private float neutralSpeed;
 	[SerializeField] private float minSpeed;
 	[SerializeField] private float maxSpeed;
+	private float currentSpeed;
 
 
 	/*********************************************************************************************************
 	 			 							REUNITING VARIABLES
 	**********************************************************************************************************/
+	[Header("Reunite effect")]
+	[SerializeField] private float reuniteEffectLingerTime;
 	private bool touchedSinceEntry = true; 		// whether the player touched the other player since entering the room (UGLY CODE)
 	private bool reuniting = false;
-	[SerializeField] private float reuniteEffectLingerTime;
 
 	/*********************************************************************************************************
 	 			 								EXPERIENCE VARIABLES
 	**********************************************************************************************************/
+	[Header("Trail")]
+	[SerializeField] private int maxTrailLength = 5;
 	private TrailController trailController;
+
+
+	[Header("References")]
+	[SerializeField] private GameObject otherPlayer;
+	[SerializeField] private ParticleSystem aura;
+	[SerializeField] private SoundController soundController;
+	[SerializeField] private RelationshipDynamicsController relationshipDynamicsController;
 	[SerializeField] private AudioSource experienceCollectAudioSource;
+
 
 	/*********************************************************************************************************
 	 			 								INITIALISATION
@@ -408,7 +419,8 @@ public class PlayerController : MonoBehaviour {
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 		//if (!experienceCollectAudioSource.isPlaying)
 		//experienceCollectAudioSource.Play();
-		trailController.GrowTrail();
+		if (trailController.TrailLength() < maxTrailLength)
+			trailController.GrowTrail();
 	}
 
 	private void GainNegativeExperience() {
