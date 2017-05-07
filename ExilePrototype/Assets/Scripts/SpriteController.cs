@@ -11,6 +11,8 @@ public class SpriteController : MonoBehaviour {
 	private SpriteShake spriteShakePositive;
 	private SpriteShake spriteShakeNegative;
 
+	private Color invisibleColor;
+
 	private float maxBounds; // The max bounds for players' balance, used to calculate alpha of sprites
 
 	void Awake() {
@@ -35,6 +37,10 @@ public class SpriteController : MonoBehaviour {
 		Color newColor = colour;
 		newColor.a = 0.0f;
 		negativeRenderer.color = newColor;
+
+		// Set the inviisble color
+		invisibleColor = colour;
+		invisibleColor.a = 0.0f;
 	}
 
 	/*********************************************************************************************************
@@ -56,6 +62,11 @@ public class SpriteController : MonoBehaviour {
 			newColor.a = targetAlpha;
 			negativeRenderer.color = newColor;
 			Debug.Log(balance + " gives " + targetAlpha);
+		}
+		else {
+			Color newColor = negativeRenderer.color;
+			newColor = Color.Lerp(newColor, invisibleColor, Mathf.PingPong(Time.time, 1));
+			negativeRenderer.color = newColor;
 		}
 	}
 
