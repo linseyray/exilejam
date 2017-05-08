@@ -43,7 +43,6 @@ public class PlayerController : MonoBehaviour {
 	private float experienceImpact = 0.0f;			// the amount with which experiences influence balance
 
 
-
 	/*********************************************************************************************************
 	 			 								ROOM STATE
 	**********************************************************************************************************/
@@ -51,7 +50,8 @@ public class PlayerController : MonoBehaviour {
 	private PlayerLocation currentRoom = PlayerLocation.UNDECIDED;
 
 	[Header("Balance Shifting")]
-	[SerializeField] float BALANCE_SHIFT_TIME;		// After this time balance is shifted from draining to recharing or vice versa
+	[SerializeField] float BALANCE_SHIFT_TIME;		// After this time balance is shifted from draining to recharing or vice versa,
+	private bool shiftedSinceAction = false;		// (but only once after players make the balance shift by an action)
 	private float timeUntilBalanceShift;			// Countdown from BALANCE_SHIFT_TIME
 													// Reset by 1) reaching 0.0, 2) reunite effect, 3) moving to room
 
@@ -97,6 +97,9 @@ public class PlayerController : MonoBehaviour {
 	[SerializeField] private SoundController soundController;
 	[SerializeField] private RelationshipDynamicsController relationshipDynamicsController;
 	[SerializeField] private AudioSource experienceCollectAudioSource;
+	[SerializeField] private ExperienceSpawner room1ExperienceSpawner;
+	[SerializeField] private ExperienceSpawner room2ExperienceSpawner;
+	[SerializeField] private ExperienceSpawner room3ExperienceSpawner;
 	private Rigidbody2D rigidBody2D;
 	private SpriteRenderer spriteRenderer;
 	private SpriteController spriteController;
@@ -176,16 +179,36 @@ public class PlayerController : MonoBehaviour {
 	private void UpdateBalance() {
 		AddToBalance(((int) currentBalanceDirection) * roomPresenceImpact);
 
-		// Balance shift after some time
-		if (timeUntilBalanceShift > 0.0f)
-			timeUntilBalanceShift -= Time.deltaTime;
-		if (timeUntilBalanceShift <= 0.0f)  {
-			if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR)
-				currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
-			else
+		if (currentRoom != PlayerLocation.CENTRAL_ROOM) {
+			// Always shift the balance to negative after BALANCE_SHIFT_TIME time 
+			if (timeUntilBalanceShift > 0.0f)
+				timeUntilBalanceShift -= Time.deltaTime;
+			else {
+				// Shift the balance to negative
 				currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
-			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
-			Debug.Log("Balance Shifted");
+				timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+				Debug.Log("Balance Shifted");
+			}
+		}
+		else 
+		if (currentRoom == PlayerLocation.CENTRAL_ROOM) {
+			if (shiftedSinceAction)
+				// Only shift balance if we haven't already shifted it 
+				return;
+
+			// Balance shift after some time
+			if (timeUntilBalanceShift > 0.0f)
+				timeUntilBalanceShift -= Time.deltaTime;
+			else {
+				// Shift the balance
+				if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR)
+					currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+				else
+					currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
+				timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+				Debug.Log("Balance Shifted");
+				shiftedSinceAction = true;
+			}
 		}
 	}
 		
@@ -197,11 +220,9 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	private void UpdatePlayerVision() {
-		// Slow  changes based on room presence
-		if (currentBalanceDirection == BalanceDirection.DRAINING_FACTOR/* && balance <= 0.0f*/)
-			cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, roomPresenceImpact);
-		if (currentBalanceDirection == BalanceDirection.RECHARGE_FACTOR/* && balance >= 0.0f*/)
-			cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, roomPresenceImpact);
+		// Slow changes based on room presence
+		cameraController.UpdatePlayerVision(currentBalanceDirection, roomPresenceImpact);
+
 	}
 
 	private void UpdatePlayerMovement() {
@@ -339,6 +360,7 @@ public class PlayerController : MonoBehaviour {
 			AddToBalance(otherPlayerImpact);
 			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+			shiftedSinceAction = false;
 			reuniting = true;
 			soundController.PlayReuniteSound();
 		}
@@ -385,7 +407,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		else
 		if (collider.tag == "NegativeExperience") {
-			GainNegativeExperience();
+			//GainNegativeExperience();
 			collider.gameObject.GetComponent<ExperienceBehaviour>().Consume();
 		}
 		
@@ -412,24 +434,17 @@ public class PlayerController : MonoBehaviour {
 
 
 	private void GainPositiveExperience() {
-		AddToBalance(experienceImpact);
-		cameraController.UpdatePlayerVision(BalanceDirection.RECHARGE_FACTOR, experienceImpact);
+		if (trailController.TrailLength() >= maxTrailLength)
+			// Only allow experiences to impact balance up until a certain point
+			return;
+			
 		currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
+		AddToBalance(experienceImpact);
+		cameraController.UpdatePlayerVision(currentBalanceDirection, experienceImpact);
 		//if (!experienceCollectAudioSource.isPlaying)
 		//experienceCollectAudioSource.Play();
-		if (trailController.TrailLength() < maxTrailLength)
-			trailController.GrowTrail();
-	}
-
-	private void GainNegativeExperience() {
-		AddToBalance(-experienceImpact);
-		cameraController.UpdatePlayerVision(BalanceDirection.DRAINING_FACTOR, experienceImpact);
-		currentBalanceDirection = BalanceDirection.DRAINING_FACTOR;
-		//if (!experienceCollectAudioSource.isPlaying)
-			//experienceCollectAudioSource.Play();
 		trailController.GrowTrail();
 	}
-
 
 	private void MoveToRoom(PlayerLocation newRoom) {
 		if (newRoom == currentRoom)
@@ -445,8 +460,16 @@ public class PlayerController : MonoBehaviour {
 			// Recharge when entering a room 
 			currentBalanceDirection = BalanceDirection.RECHARGE_FACTOR;
 			timeUntilBalanceShift = BALANCE_SHIFT_TIME;
+			shiftedSinceAction = false;
 			EnableDarkVignette();	// Increased vignette effect when in another room
 			otherPlayerController.EnableDarkVignette();
+
+			if (currentRoom == PlayerLocation.ROOM1)
+				room1ExperienceSpawner.ResetSpawnDelay();
+			if (currentRoom == PlayerLocation.ROOM2)
+				room2ExperienceSpawner.ResetSpawnDelay();
+			if (currentRoom == PlayerLocation.ROOM3)
+				room3ExperienceSpawner.ResetSpawnDelay();
 		}
 		else 
 		if (otherPlayerController.GetLocation() == PlayerLocation.CENTRAL_ROOM) {

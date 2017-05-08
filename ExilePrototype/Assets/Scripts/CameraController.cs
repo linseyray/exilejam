@@ -98,6 +98,8 @@ public class CameraController : MonoBehaviour {
 	public void UpdatePlayerVision(PlayerController.BalanceDirection direction, float changeAmount) { 
 		if (addingImpulse)
 			return;
+
+		Debug.Log("Updating player vision " + direction + " " + changeAmount);
 		
 		if (direction == PlayerController.BalanceDirection.RECHARGE_FACTOR)
 			Recharge(changeAmount);
@@ -113,7 +115,6 @@ public class CameraController : MonoBehaviour {
 
 	private void Recharge(float changeAmount) {
 
-
 		// Decrease vignette
 		if (vignetteFilter.intensity >= 0.0f) 
 			vignetteFilter.intensity -= changeAmount * vignetteSpeed;
@@ -121,7 +122,6 @@ public class CameraController : MonoBehaviour {
 			disablingDarkVignette = false;
 			vignetteSpeed = lightVignetteSpeed;
 		}
-			
 
 		// Decrease noise
 		if (noiseFilter.grainIntensityMax >= 0.0f) {

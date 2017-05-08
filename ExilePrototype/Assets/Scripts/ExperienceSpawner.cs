@@ -5,10 +5,11 @@ using UnityEngine;
 public class ExperienceSpawner : MonoBehaviour {
 
 	[SerializeField] private GameObject experiencePrefab;
-	[SerializeField] private float spawnDelay = 1.0f;
+	[SerializeField] private float startSpawnDelay = 1.0f;
 	[SerializeField] private float delayIncreaseFactor = 1.0f;
 	[SerializeField] private Transform[] spawnPointPositions;
 
+	private float spawnDelay = 0.0f;
 	private SpawnPoint[] spawnPoints;
 	public struct SpawnPoint {
 		public Transform transform;
@@ -29,6 +30,8 @@ public class ExperienceSpawner : MonoBehaviour {
 			spawnPoints[i] = new SpawnPoint(spawnPointPositions[i], identifier);
 			Spawn(identifier);
 		}
+
+		spawnDelay = startSpawnDelay;
 	}
 	
 	void Update () {
@@ -58,6 +61,10 @@ public class ExperienceSpawner : MonoBehaviour {
 		// Function resumes after spawnDelay
 		spawnDelay += delayIncreaseFactor;
 		Spawn(identifier);
+	}
+
+	public void ResetSpawnDelay() {
+		spawnDelay = startSpawnDelay;
 	}
 
 }

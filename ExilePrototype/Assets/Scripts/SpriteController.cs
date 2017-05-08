@@ -61,7 +61,7 @@ public class SpriteController : MonoBehaviour {
 			Color newColor = negativeRenderer.color;
 			newColor.a = targetAlpha;
 			negativeRenderer.color = newColor;
-			Debug.Log(balance + " gives " + targetAlpha);
+			//Debug.Log(balance + " gives " + targetAlpha);
 		}
 		else {
 			Color newColor = negativeRenderer.color;
