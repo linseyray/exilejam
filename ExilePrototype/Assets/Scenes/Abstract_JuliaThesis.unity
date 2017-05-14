@@ -1159,6 +1159,16 @@ Prefab:
       propertyPath: room3ExperienceSpawner
       value: 
       objectReference: {fileID: 804628919}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: darkVignetteIntensity
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: lightVignetteIntensity
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114287093096820022, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
     - {fileID: 114397620843497806, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
@@ -1964,6 +1974,16 @@ Prefab:
       propertyPath: room3ExperienceSpawner
       value: 
       objectReference: {fileID: 804628919}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: darkVignetteIntensity
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: lightVignetteIntensity
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 114287093096820022, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
