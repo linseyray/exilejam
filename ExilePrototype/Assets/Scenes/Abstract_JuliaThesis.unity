@@ -1163,6 +1163,18 @@ Prefab:
         type: 2}
       propertyPath: darkVignetteSpeed
       value: 0.01
+      propertyPath: darkVignetteIntensity
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: lightVignetteIntensity
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: reuniteEffectLingerTime
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114287093096820022, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
@@ -1626,7 +1638,7 @@ Prefab:
     - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
         type: 2}
       propertyPath: reuniteEffectLingerTime
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
         type: 2}
@@ -1973,6 +1985,13 @@ Prefab:
         type: 2}
       propertyPath: darkVignetteSpeed
       value: 0.01
+      propertyPath: darkVignetteIntensity
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114061274848378822, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: lightVignetteIntensity
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
