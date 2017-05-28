@@ -274,26 +274,26 @@ public class PlayerController : MonoBehaviour {
 			bool otherSeeksContact = triggerAxisOther >= 1 || Input.GetButton(magnetButtonOther);
 			bothSeekingContact = seekingContact && otherSeeksContact;
 
-			// HACK: Magnet & aura independent of magnet button (always when close)
-			fadeInAura = true;	
+			// HACK: aura independent of magnet button (always when close)
+			// keep magnet force dependent on magnet button
+			fadeInAura = true;
 			AddMagnetForce();
+
 			// Are we seeking contact?
-			/*
 			if (seekingContact)  {
-				fadeInAura = true; // Activate aura
+				//fadeInAura = true; // Activate aura
 				AddMagnetForce();
 			}
 			else {
-				fadeInAura = false;
-				fadeOutAura = true;
+				//fadeInAura = false;
+				//fadeOutAura = true;
 			}
-			*/
 
 			// Is the other seeking contact?
 			if (otherSeeksContact) {
 				if (seekingContact) {
 					// Both want to seek contact 
-					//AddMagnetForce(); // double the magnet force
+					AddMagnetForce(); // double the magnet force
 					ResetTolerance();	
 				}
 				else {
