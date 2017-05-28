@@ -967,6 +967,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 199451323502447992, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
   m_IsPrefabParent: 0
@@ -1734,6 +1739,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1211247862628028, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 199451323502447992, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -1903,14 +1913,14 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1753991975
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1753991974}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_MotionVectors: 1
@@ -2746,10 +2756,20 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1433093923471188, guid: 685dff71dec3648d681ddca9e5455e81, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1942751159450334, guid: 685dff71dec3648d681ddca9e5455e81, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212003281483966134, guid: 685dff71dec3648d681ddca9e5455e81,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 212523905836614310, guid: 685dff71dec3648d681ddca9e5455e81,
+        type: 2}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
