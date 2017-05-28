@@ -30,7 +30,8 @@ public class PlayerController : MonoBehaviour {
 	public BalanceDirection currentBalanceDirection;
 
 	[Header("Magnet")]
-	[SerializeField] private float magnetStrength;
+	[SerializeField] private float magnetStrengthPositiveBalance;
+	[SerializeField] private float magnetStrengthNegativeBalance;
 	[SerializeField] private float magnetToleranceTime; 	// Time until one player starts shaking when other keeps 
 	// seeking contact (activating magnet)
 	private bool isCloseToOtherPlayer = false;		// whether other player is in this player's connection area
@@ -273,7 +274,11 @@ public class PlayerController : MonoBehaviour {
 			bool otherSeeksContact = triggerAxisOther >= 1 || Input.GetButton(magnetButtonOther);
 			bothSeekingContact = seekingContact && otherSeeksContact;
 
+			// HACK: Magnet & aura independent of magnet button (always when close)
+			fadeInAura = true;	
+			AddMagnetForce();
 			// Are we seeking contact?
+			/*
 			if (seekingContact)  {
 				fadeInAura = true; // Activate aura
 				AddMagnetForce();
@@ -282,12 +287,13 @@ public class PlayerController : MonoBehaviour {
 				fadeInAura = false;
 				fadeOutAura = true;
 			}
+			*/
 
 			// Is the other seeking contact?
 			if (otherSeeksContact) {
 				if (seekingContact) {
 					// Both want to seek contact 
-					AddMagnetForce(); // double the magnet force
+					//AddMagnetForce(); // double the magnet force
 					ResetTolerance();	
 				}
 				else {
@@ -335,7 +341,11 @@ public class PlayerController : MonoBehaviour {
 		Vector2 targetPoint = otherPlayer.transform.position;
 		Vector2 currentPosition = transform.position;
 		Vector2 forceDirection = targetPoint - currentPosition;
-		rigidBody2D.AddForce(forceDirection * magnetStrength);
+
+		if (balance <= 0.0f)
+			rigidBody2D.AddForce(forceDirection * magnetStrengthNegativeBalance);
+		else
+			rigidBody2D.AddForce(forceDirection * magnetStrengthPositiveBalance);
 	}
 
 	private float MapAxisValue(float axisValue) {
