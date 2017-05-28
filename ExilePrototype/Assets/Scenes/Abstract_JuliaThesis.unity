@@ -1999,6 +1999,16 @@ Prefab:
       propertyPath: lightVignetteIntensity
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: magnetStrengthPositiveBalance
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114821304673981558, guid: a30116bc5d70149c7b7f2d2af7cfcae4,
+        type: 2}
+      propertyPath: magnetStrengthNegativeBalance
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
     - {fileID: 114287093096820022, guid: a30116bc5d70149c7b7f2d2af7cfcae4, type: 2}

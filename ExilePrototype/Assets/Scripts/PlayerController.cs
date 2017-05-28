@@ -277,7 +277,7 @@ public class PlayerController : MonoBehaviour {
 			// HACK: aura independent of magnet button (always when close)
 			// keep magnet force dependent on magnet button
 			fadeInAura = true;
-			AddMagnetForce();
+			//AddMagnetForce();
 
 			// Are we seeking contact?
 			if (seekingContact)  {
